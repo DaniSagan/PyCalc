@@ -79,7 +79,7 @@ To exit the program:
 ## List of operators  
 
 Command | Inputs | Outputs | Description
---- | --- | ---
+--- | --- | --- | ---
 *+* | 2 | 1 | Sum of two numbers
 *-* | 2 | 1 | Difference of two numbers
 *\** | 2 | 1 | Multiplication of two numbers
