@@ -77,6 +77,7 @@ PyCalc v0.1
                      "true": dfv.data.Bool(True),
                      "false": dfv.data.Bool(False),
                      "if": dfv.operator.If(),
+                     "ifelse": dfv.operator.IfElse(),
                      "not": dfv.operator.Not(), 
                      "while": dfv.operator.While(),
                      "=": dfv.operator.Eq(),

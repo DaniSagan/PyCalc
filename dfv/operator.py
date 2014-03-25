@@ -542,6 +542,30 @@ class If(Operator):
             stack.append(dfv.data.Error("Not enough parameters"))  
             
             
+class IfElse(Operator):
+    def __init__(self):
+        Operator.__init__(self)
+        self.type = "ifelse"
+        self.world = "ifelse"
+        
+    def execute(self, stack, variables):
+        if len(stack) >= 3:
+            if stack[-1].type == "bool" and stack[-2].type == "list" and stack[-3].type == "list":
+                n3 = stack.pop()
+                n2 = stack.pop()
+                n1 = stack.pop()
+                if n3.value == True:
+                    for cmd in n1.values:
+                        cmd.execute(stack, variables)
+                else:
+                    for cmd in n2.values:
+                        cmd.execute(stack, variables)
+            else:
+                stack.append(dfv.data.Error("Types not supported"))
+        else:
+            stack.append(dfv.data.Error("Not enough parameters")) 
+            
+            
 class Not(Operator):
     def __init__(self):
         Operator.__init__(self)
