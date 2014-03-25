@@ -1,0 +1,149 @@
+#! /usr/bin/python
+# -*- coding=utf-8 -*-
+
+import math
+import dfv.data
+import dfv.operator
+import re
+
+def is_number(string):
+    try:
+        float(string)
+        return True
+    except:
+        return False 
+
+COMMAND = """
+[   0 ".n" def
+    [   .n ++ ".n" def
+        .n print
+        [ret] 10 .n = if
+    ][true] while
+] "test" fun
+
+[   0 ".m" def   
+    test    
+    [   .m ++ ".m" def
+        .m print
+        [ret] 20 .m = if
+    ][.m 100 <] while
+] "test2" fun
+
+
+[   0 ".m" def
+    test   
+    [   .m ++ ".m" def
+        [ret] 20 .m = if
+    ][.m print .m 100 <] while
+] "test3" fun
+"""
+            
+class App:
+    TEXT = """
+PyCalc v0.1
+           """
+    def __init__(self):
+        self.cmd = ""
+        self.vars = {"running": True,
+                     "curr_list": None,
+                     "curr_function": None,
+                     "ret_function": False,
+                     "[": dfv.operator.StartList(),
+                     "]": dfv.operator.EndList(),
+                     "+": dfv.operator.Sum(),
+                     "-": dfv.operator.Diff(),
+                     "*": dfv.operator.Mult(),
+                     "/": dfv.operator.Div(),
+                     "drop": dfv.operator.Drop(),
+                     "dup": dfv.operator.Dup(),
+                     "exp": dfv.operator.Exp(),
+                     "neg": dfv.operator.Neg(),
+                     "inv": dfv.operator.Inv(),
+                     "complex": dfv.operator.ToComplex(),
+                     "sin": dfv.operator.Sin(),
+                     "cos": dfv.operator.Cos(),
+                     "tan": dfv.operator.Tan(),
+                     "ln": dfv.operator.Ln(),
+                     "abs": dfv.operator.Abs(),
+                     "arg": dfv.operator.Arg(),
+                     "pow": dfv.operator.Pow(),
+                     "def": dfv.operator.Def(),
+                     "cls": dfv.operator.Cls(),
+                     ".": dfv.operator.Eval(),
+                     "fun": dfv.operator.Fun(),
+                     "cat": dfv.operator.Cat(),
+                     "pi": dfv.data.Number(math.pi),
+                     "e": dfv.data.Number(math.e),
+                     "true": dfv.data.Bool(True),
+                     "false": dfv.data.Bool(False),
+                     "if": dfv.operator.If(),
+                     "not": dfv.operator.Not(), 
+                     "while": dfv.operator.While(),
+                     "=": dfv.operator.Eq(),
+                     "quit": dfv.operator.Quit(),
+                     "!=": dfv.operator.Neq(),
+                     "<": dfv.operator.LessThan(),
+                     "<=": dfv.operator.LessEqThan(),
+                     ">": dfv.operator.GreaterThan(),
+                     ">=": dfv.operator.GreaterEqThan(),
+                     "++": dfv.operator.Inc(),
+                     "--": dfv.operator.Dec(),
+                     "%": dfv.operator.Mod(),
+                     "and": dfv.operator.And(),
+                     "or": dfv.operator.Or(),
+                     "ret": dfv.operator.Ret(),
+                     "print": dfv.operator.Print(),
+                     "vars": dfv.operator.Vars()}
+                     
+        self.string_mode = False
+        self.stack = dfv.data.List(parent=None)
+        self.curr_list = self.stack
+        
+    def run(self):
+        print(self.TEXT)
+        #while self.cmd != "quit":
+        self.execute_cmds(self.parse_cmd(COMMAND))
+        while self.vars["running"]:
+            #self.print_stack()
+            self.print_list()
+            self.cmd = raw_input(">> ")
+            self.execute_cmds(self.parse_cmd(self.cmd))
+        return 0
+                
+    def execute_cmds(self, cmds):
+        for cmd in cmds:
+            if self.vars["curr_list"] == None:
+                cmd.execute(self.stack, self.vars)                
+            else:
+                if cmd.value != "]" and cmd.value != "[": self.vars["curr_list"].append(cmd)
+                else: cmd.execute(self.stack, self.vars)                
+                
+    def parse_cmd(self, cmd_string):
+        cmds = []
+        strs = re.findall('"([^"]*)"', cmd_string)
+        cmd_string = re.sub('"([^"]*)"', "$", cmd_string)
+        cmd_string = cmd_string.replace("[", " [ ")
+        cmd_string = cmd_string.replace("]", " ] ")
+        for cmd in str.split(cmd_string):
+            if is_number(cmd):
+                cmds.append(dfv.data.Number(float(cmd)))
+            elif cmd == "$":
+                cmds.append(dfv.data.String(strs.pop(0)))
+            else:
+                cmds.append(dfv.data.Cmd(cmd))
+        return cmds
+        
+    def print_list(self):
+        self.stack.print_()
+        
+    def print_stack(self):
+        for x in self.stack:
+            print x
+        print "----------------"
+            
+
+def main():    
+    app = App()
+    app.run()
+    
+if __name__ == "__main__": main()
