@@ -138,6 +138,7 @@ PyCalc v0.1
         self.stack.print_()
         
     def print_stack(self):
+        print "----------------"
         for x in self.stack:
             print x
         print "----------------"

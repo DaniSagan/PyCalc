@@ -114,6 +114,7 @@ class List(Data):
         return self.values.pop()
         
     def print_(self):
+        print "-------------------"
         for x in self.values:
             print x
         print "-------------------"
