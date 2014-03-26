@@ -3,6 +3,7 @@
 
 import math
 import dfv.data
+from main import App
 
 class Operator:
     def __init__(self):
@@ -95,7 +96,7 @@ class Mult(Operator):
                 n2 = stack.pop()
                 n1 = stack.pop()
                 res = []
-                print int(n2.value)
+                #print int(n2.value)
                 for k in range(int(n2.value)):
                     res.extend(n1.values)
                 stack.append(dfv.data.List(parent=n1.parent, values=res))
@@ -597,11 +598,11 @@ class While(Operator):
                 loop = True
                 while loop:
                     for cmd in n2.values:
-                        cmd.execute(stack, variables)
+                        cmd.execute(stack, variables, variables["curr_function"])
                     res = stack.pop()
                     if res.type == "bool" and res.value == True:
                         for cmd in n1.values:
-                            cmd.execute(stack, variables)
+                            cmd.execute(stack, variables, variables["curr_function"])
                             if variables["ret_function"]: 
                                 loop = False
                                 break
@@ -894,3 +895,20 @@ class Vars(Operator):
             gres.extend(ll)            
         res = [dfv.data.String(key) for key in gres]    
         stack.append(dfv.data.List(variables["curr_list"], values=res))
+        
+        
+class Import(Operator):
+    def __init__(self):
+        Operator.__init__(self)
+        self.type = "import"
+        self.word = "import"
+        
+    def execute(self, stack, variables):
+        if len(stack) >= 1:            
+            if stack[-1].type == "string":
+                n1 = stack.pop()
+                #app.import_file()
+            else:
+                stack.append(dfv.data.Error("Types not supported"))
+        else:
+            stack.append(dfv.data.Error("Not enough parameters"))

@@ -14,28 +14,7 @@ def is_number(string):
         return False 
 
 COMMAND = """
-[   0 ".n" def
-    [   .n ++ ".n" def
-        .n print
-        [ret] 10 .n = if
-    ][true] while
-] "test" fun
-
-[   0 ".m" def   
-    test    
-    [   .m ++ ".m" def
-        .m print
-        [ret] 20 .m = if
-    ][.m 100 <] while
-] "test2" fun
-
-
-[   0 ".m" def
-    test   
-    [   .m ++ ".m" def
-        [ret] 20 .m = if
-    ][.m print .m 100 <] while
-] "test3" fun
+{startup.ee}
 """
             
 class App:
@@ -103,7 +82,7 @@ PyCalc v0.1
     def run(self):
         print(self.TEXT)
         #while self.cmd != "quit":
-        self.execute_cmds(self.parse_cmd(COMMAND))
+        #self.execute_cmds(self.parse_cmd(COMMAND))
         while self.vars["running"]:
             #self.print_stack()
             self.print_list()
@@ -122,14 +101,24 @@ PyCalc v0.1
     def parse_cmd(self, cmd_string):
         cmds = []
         strs = re.findall('"([^"]*)"', cmd_string)
-        cmd_string = re.sub('"([^"]*)"', "$", cmd_string)
+        cmd_string = re.sub('"([^"]*)"', "$str", cmd_string)
+        imports = re.findall('{([^}]+)}', cmd_string)
+        cmd_string = re.sub('{([^}]+)}', "$imp", cmd_string)
         cmd_string = cmd_string.replace("[", " [ ")
         cmd_string = cmd_string.replace("]", " ] ")
         for cmd in str.split(cmd_string):
             if is_number(cmd):
                 cmds.append(dfv.data.Number(float(cmd)))
-            elif cmd == "$":
+            elif cmd == "$str":
                 cmds.append(dfv.data.String(strs.pop(0)))
+            elif cmd == "$imp":
+                try:
+                    with open(imports.pop(0), "r") as f:
+                        lines = f.read()
+                    cmds.extend(self.parse_cmd(lines))
+                except:
+                    pass
+                    #cmds.append(dfv.data.String(strs.pop(0)))
             else:
                 cmds.append(dfv.data.Cmd(cmd))
         return cmds
@@ -142,7 +131,11 @@ PyCalc v0.1
         for x in self.stack:
             print x
         print "----------------"
-            
+        
+    def import_file(self, filename):
+        with open(filename, "r") as f:
+            lines = f.read()
+        self.execute_cmds(self.parse_cmd(lines))
 
 def main():    
     app = App()

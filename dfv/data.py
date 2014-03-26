@@ -26,7 +26,9 @@ class Cmd(Data):
         # first we see if we can match the command to any global variable
         if self.value in variables:
             if variables[self.value].type == "function":
-                variables[self.value].execute(stack, variables, parent_function) 
+                fn = Function(variables[self.value].values, variables[self.value].name)
+                fn.execute(stack, variables, parent_function)
+                #variables[self.value].execute(stack, variables, parent_function) 
             else:
                 variables[self.value].execute(stack, variables)                
         # if not we try the local variables
@@ -141,7 +143,8 @@ class Function(Data):
         #self.locals = {}
         variables["curr_function"] = self
         for cmd in self.values:
-            cmd.execute(stack, variables, parent_function=self)            
+            #print "cmd:", cmd
+            cmd.execute(stack, variables, parent_function=self)           
             if variables["ret_function"]: break
         variables["ret_function"] = False
         variables["curr_function"] = parent_function
