@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<language id="eesyscript" _name="Eesyscript" version="2.0" _section="Scripts">
+  <metadata>
+    <property name="mimetypes">text/x-eesyscript</property>
+    <property name="globs">*.ee</property>
+  </metadata>
+  <styles>
+    <style id="comment" _name="Comment" map-to="def:comment"/>
+    <style id="string" _name="String" map-to="def:string"/>
+    <style id="escaped-character" _name="Escaped Character" map-to="def:special-char"/>
+    <style id="preprocessor" _name="Preprocessor" map-to="def:preprocessor"/>
+    <style id="included-file" _name="Included File" map-to="def:string"/>
+    <style id="char" _name="Character" map-to="def:character"/>
+    <style id="keyword" _name="Keyword" map-to="def:keyword"/>
+    <style id="type" _name="Data Type" map-to="def:type"/>
+  </styles>
+  <definitions>
+  
+    <define-regex id="symbolchar">[-!+\\|=:&amp;&gt;&lt;]</define-regex>
+  
+    <context id="eesyscript">
+      <include>
+
+        <context id="comment" style-ref="comment">
+          <start>{</start>
+          <end>}</end>
+        </context>
+
+        <context id="string" end-at-line-end="false" style-ref="string">
+          <start>"</start>
+          <end>"</end>
+          <include>
+            <context id="escape" style-ref="escaped-character">
+              <match>\\.</match>
+            </context>
+          </include>
+        </context>
+
+        <context id="comment-multiline" style-ref="comment">
+          <start>"</start>
+          <end>"</end>
+          <include>
+            <context ref="def:in-comment"/>
+          </include>
+        </context>
+
+        <context ref="def:decimal"/>
+        <context ref="def:float"/>
+
+        <context id="keywords" style-ref="keyword">
+          <prefix>(?&lt;!\%{symbolchar})</prefix>
+          <suffix>(?!\%{symbolchar})</suffix>
+          <keyword>\+</keyword>
+          <keyword>\-</keyword>
+          <keyword>\*</keyword>
+          <keyword>\/</keyword>
+          <keyword>&lt;</keyword>
+          <keyword>&gt;</keyword>
+          <keyword>&lt;=</keyword>
+          <keyword>&gt;=</keyword>
+          <keyword>if</keyword>
+          <keyword>ifelse</keyword>
+          <keyword>while</keyword>
+          <keyword>ret</keyword>
+          <keyword>cls</keyword>
+          <keyword>drop</keyword>
+          <keyword>dup</keyword>
+          <keyword>def</keyword>
+          <keyword>fun</keyword>
+          <keyword>true</keyword>
+          <keyword>false</keyword>
+          <keyword>\+\+</keyword>
+          <keyword>\-\-</keyword>
+          <keyword>\%</keyword>
+        </context>
+
+        <context id="types" style-ref="type">
+          <keyword>char</keyword>
+        </context>
+
+      </include>
+    </context>
+  </definitions>
+</language>
