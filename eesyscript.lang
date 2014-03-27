@@ -49,7 +49,8 @@
 
         <context id="keywords" style-ref="keyword">
           <prefix>(?&lt;!\%{symbolchar})</prefix>
-          <suffix>(?!\%{symbolchar})</suffix>
+          <!--<suffix>(?!\%{symbolchar})</suffix>-->
+          <suffix>(?=([\s,\[,\]])|$|[,])</suffix>
           <keyword>\+</keyword>
           <keyword>\-</keyword>
           <keyword>\*</keyword>
@@ -69,9 +70,26 @@
           <keyword>fun</keyword>
           <keyword>true</keyword>
           <keyword>false</keyword>
+          <keyword>pow</keyword>
+          <keyword>sin</keyword>
+          <keyword>cos</keyword>
+          <keyword>tan</keyword>
+          <keyword>complex</keyword>
+          <keyword>ln</keyword>
+          <keyword>exp</keyword>
+          <keyword>vars</keyword>
+          <keyword>print</keyword>
+          <keyword>abs</keyword>
+          <keyword>arg</keyword>
+          <keyword>pi</keyword>
+          <keyword>e</keyword>
+          <keyword>not</keyword>
           <keyword>\+\+</keyword>
           <keyword>\-\-</keyword>
           <keyword>\%</keyword>
+          <keyword>\=</keyword>
+          <keyword>\!\=</keyword>
+          <keyword>quit</keyword>
         </context>
 
         <context id="types" style-ref="type">

@@ -896,7 +896,7 @@ class Vars(Operator):
         res = [dfv.data.String(key) for key in gres]    
         stack.append(dfv.data.List(variables["curr_list"], values=res))
         
-        
+## Not implemented yet        
 class Import(Operator):
     def __init__(self):
         Operator.__init__(self)
@@ -908,6 +908,25 @@ class Import(Operator):
             if stack[-1].type == "string":
                 n1 = stack.pop()
                 #app.import_file()
+            else:
+                stack.append(dfv.data.Error("Types not supported"))
+        else:
+            stack.append(dfv.data.Error("Not enough parameters"))
+            
+
+class Type(Operator):
+    def __init__(self):
+        Operator.__init__(self)
+        self.type = "type"
+        self.word = "type"
+        
+    def execute(self, stack, variables):
+        if len(stack) >= 2:            
+            if stack[-2].type == "list" and stack[-1].type == "string":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                variables[n2.value] = dfv.data.Type(name=n2.value,
+                                                    init_function=n1.values)
             else:
                 stack.append(dfv.data.Error("Types not supported"))
         else:

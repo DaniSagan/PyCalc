@@ -29,6 +29,8 @@ class Cmd(Data):
                 fn = Function(variables[self.value].values, variables[self.value].name)
                 fn.execute(stack, variables, parent_function)
                 #variables[self.value].execute(stack, variables, parent_function) 
+            elif variables[self.value].type == "data_type":
+                variables[self.value].execute(stack, variables, parent_function)
             else:
                 variables[self.value].execute(stack, variables)                
         # if not we try the local variables
@@ -151,3 +153,42 @@ class Function(Data):
         
     def __str__(self):
         return "%s: [ %s ] : function" % (self.name, ", ".join([str(x) for x in self.values]))
+
+class Type(Data):
+    def __init__(self, name, init_function):
+        Data.__init__(self)
+        self.type = "data_type"
+        self.name = name
+        self.init_function = init_function
+    
+    def execute(self, stack, variables, parent_function):
+        #self.locals = {}
+        
+        new_obj = Object(_type=self.name, name="", init_function=self.init_function)
+        variables["curr_function"] = new_obj
+        for cmd in self.init_function:
+            #print "cmd:", cmd
+            cmd.execute(stack, variables, parent_function=new_obj)           
+            if variables["ret_function"]: break
+        variables["ret_function"] = False
+        variables["curr_function"] = parent_function
+        stack.append(new_obj)
+        
+    def __str__(self):
+        return "%s : type" % (self.name)
+    
+class Object(Data):
+    def __init__(self, _type, name, init_function):
+        Data.__init__(self)
+        self.type = _type
+        self.name = name
+        self.locals = {"init": init_function}
+    
+    def execute(self, stack, variables, parent_function):
+        pass
+        
+    def __str__(self):
+        return "[%s] : object" % (" ".join([("%s: %s"%(key, self.locals[key])) for key in self.locals]))
+    
+    
+    

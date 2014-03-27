@@ -90,3 +90,5 @@ To exit the program:
     >> quit
 
 For more information please visit the [wiki](https://github.com/DaniSagan/PyCalc/wiki)
+
+To install the language specification for gedit copy the `eesyscript.lang` file inside `/usr/share/gtksourceview-3.0/language-specs/`
