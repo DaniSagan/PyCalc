@@ -170,12 +170,12 @@ class Function(Data):
         return "%s: [ %s ]" % (self.name, ", ".join([str(x) for x in self.values]))
 
 class Type(Data):
-    def __init__(self, name, params, functions):
+    def __init__(self, name, params, init_function):
         Data.__init__(self)
         self.type = "data_type"
         self.name = name
         self.params = params
-        self.functions = functions
+        self.init_function = init_function
     
     def execute(self, stack, variables, parent_function):
         #self.locals = {}
@@ -186,7 +186,13 @@ class Type(Data):
             for p in param_names:
                 param_values.append(stack.pop())
             param_values.reverse()
-            new_obj = Object(_type=self.name, name="", params=param_names, param_values=param_values, functions=self.functions)
+            new_obj = Object(_type=self.name, name="", params=param_names, param_values=param_values, init_function=self.init_function)
+            
+            variables["curr_function"] = new_obj
+            for cmd in self.init_function:
+                cmd.execute(stack, variables, parent_function=new_obj)
+            variables["curr_function"] = parent_function 
+                
             stack.append(new_obj)
         else:
             stack.append(Error("Not enough parameneters"))
@@ -195,19 +201,20 @@ class Type(Data):
         return self.name
     
 class Object(Data):
-    def __init__(self, _type, name, params, param_values, functions):
+    def __init__(self, _type, name, params, param_values, init_function):
         Data.__init__(self)
         self.type = "object." + _type
         self.name = name
         self.locals = {}
         for p, v in zip(params, param_values):
             self.locals[p] = v
+        self.locals["self"] = self 
     
     """def execute(self, stack, variables, parent_function):
         pass"""
         
     def __str__(self):
-        return "[%s]" % (" ".join([("%s: %s"%(key, self.locals[key])) for key in self.locals]))
+        return "[%s]" % (" ".join([("%s: %s"%(key, self.locals[key])) for key in self.locals if key != "self"]))
     
     
     

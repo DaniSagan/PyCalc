@@ -936,7 +936,7 @@ class Type(Operator):
                 n1 = stack.pop()
                 variables[n3.value] = dfv.data.Type(name=n3.value,
                                                     params=n1.values,
-                                                    functions=n2.values)
+                                                    init_function=n2.values)
             else:
                 stack.append(dfv.data.Error("Types not supported"))
         else:
