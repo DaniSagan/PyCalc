@@ -29,6 +29,12 @@
 ] "vec2:abs" fun
 
 [   ".v" def
+    "y" get
+    "x" get
+    atan2
+] "vec2:arg" fun
+
+[   ".v" def
 ] "vec2:rot" fun
 
 [   ".v1" def 

@@ -254,6 +254,23 @@ class Sin(Operator):
             stack.append(dfv.data.Error("Not enough parameters"))
 
 
+class Asin(Operator):
+    def __init__(self):
+        Operator.__init__(self)
+        self.type = "asin"
+        self.word = "asin"
+        
+    def execute(self, stack, variables):
+        if len(stack) >= 1:            
+            if stack[-1].type == "number":
+                n1 = stack.pop()
+                stack.append(dfv.data.Number(math.asin(n1.value)))
+            else:
+                stack.append(dfv.data.Error("Types not supported"))
+        else:
+            stack.append(dfv.data.Error("Not enough parameters"))
+
+
 class Cos(Operator):
     def __init__(self):
         Operator.__init__(self)
@@ -271,6 +288,23 @@ class Cos(Operator):
             stack.append(dfv.data.Error("Not enough parameters"))
 
 
+class Acos(Operator):
+    def __init__(self):
+        Operator.__init__(self)
+        self.type = "acos"
+        self.word = "acos"
+        
+    def execute(self, stack, variables):
+        if len(stack) >= 1:            
+            if stack[-1].type == "number":
+                n1 = stack.pop()
+                stack.append(dfv.data.Number(math.acos(n1.value)))
+            else:
+                stack.append(dfv.data.Error("Types not supported"))
+        else:
+            stack.append(dfv.data.Error("Not enough parameters"))
+
+
 class Tan(Operator):
     def __init__(self):
         Operator.__init__(self)
@@ -282,6 +316,41 @@ class Tan(Operator):
             if stack[-1].type == "number":
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(math.tan(n1.value)))
+            else:
+                stack.append(dfv.data.Error("Types not supported"))
+        else:
+            stack.append(dfv.data.Error("Not enough parameters"))
+            
+            
+class Atan(Operator):
+    def __init__(self):
+        Operator.__init__(self)
+        self.type = "atan"
+        self.word = "atan"
+        
+    def execute(self, stack, variables):
+        if len(stack) >= 1:            
+            if stack[-1].type == "number":
+                n1 = stack.pop()
+                stack.append(dfv.data.Number(math.atan(n1.value)))
+            else:
+                stack.append(dfv.data.Error("Types not supported"))
+        else:
+            stack.append(dfv.data.Error("Not enough parameters"))
+            
+            
+class Atan2(Operator):
+    def __init__(self):
+        Operator.__init__(self)
+        self.type = "atan2"
+        self.word = "atan2"
+        
+    def execute(self, stack, variables):
+        if len(stack) >= 2:            
+            if stack[-2].type == "number" and stack[-1].type == "number":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                stack.append(dfv.data.Number(math.atan2(n1.value, n2.value)))
             else:
                 stack.append(dfv.data.Error("Types not supported"))
         else:

@@ -92,6 +92,10 @@
           <keyword>type</keyword>
           <keyword>edit</keyword>
           <keyword>get</keyword>
+          <keyword>asin</keyword>
+          <keyword>acos</keyword>
+          <keyword>atan</keyword>
+          <keyword>atan2</keyword>
         </context>
 
         <context id="types" style-ref="type">
