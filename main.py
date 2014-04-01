@@ -132,7 +132,7 @@ PyCalc v0.1
     def print_stack(self):
         print "----------------"
         for x in self.stack:
-            print x
+            print "%s : %s" % (x, x.type)
         print "----------------"
         
     def import_file(self, filename):

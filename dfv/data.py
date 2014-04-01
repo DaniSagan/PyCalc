@@ -23,6 +23,16 @@ class Cmd(Data):
         self.value = value
     
     def execute(self, stack, variables, parent_function=None):
+        new_value = ""
+        if len(stack) >= 1:
+            last_type = stack[-1].type
+            if last_type.startswith("object."):
+                last_type = last_type[7:]
+                new_value = last_type + ":" + self.value
+        
+        if new_value in variables:
+            self.value = new_value
+        
         # first we see if we can match the command to any global variable
         if self.value in variables:
             if variables[self.value].type == "function":
@@ -60,7 +70,7 @@ class String(Data):
         self.value = value
         
     def __str__(self):
-        return "\"%s\" : %s" % (self.value, self.type)
+        return "\"%s\"" % self.value
                 
         
 class Number(Data):
@@ -70,7 +80,7 @@ class Number(Data):
         self.value = value
         
     def __str__(self):
-        return str(self.value) + " : " + self.type
+        return str(self.value)
         
 
 class Bool(Data):
@@ -80,7 +90,7 @@ class Bool(Data):
         self.value = value
         
     def __str__(self):
-        return "%s : %s" % (self.value, self.type)
+        return "%s" % self.value
 
 
 class Error(Data):
@@ -105,7 +115,6 @@ class Complex(Data):
         if self.real_value != 0: res += str(self.real_value)
         if self.imag_value >= 0: res += "+" + str(self.imag_value) + "i"
         else: res += (str(self.imag_value) + "i")
-        res += " : " + self.type
         return res
         
 
@@ -126,11 +135,11 @@ class List(Data):
     def print_(self):
         print "-------------------"
         for x in self.values:
-            print x
+            print "%s : %s" % (x, x.type)
         print "-------------------"
         
     def __str__(self):
-        return "[ %s ] : list" % ", ".join([str(x) for x in self.values])
+        return "[ %s ]" % ", ".join([str(x) for x in self.values])
         
     def __len__(self):
         return len(self.values)
@@ -158,7 +167,7 @@ class Function(Data):
         variables["curr_function"] = parent_function
         
     def __str__(self):
-        return "%s: [ %s ] : function" % (self.name, ", ".join([str(x) for x in self.values]))
+        return "%s: [ %s ]" % (self.name, ", ".join([str(x) for x in self.values]))
 
 class Type(Data):
     def __init__(self, name, params, functions):
@@ -183,7 +192,7 @@ class Type(Data):
             stack.append(Error("Not enough parameneters"))
         
     def __str__(self):
-        return "%s : type" % (self.name)
+        return self.name
     
 class Object(Data):
     def __init__(self, _type, name, params, param_values, functions):
@@ -198,7 +207,7 @@ class Object(Data):
         pass"""
         
     def __str__(self):
-        return "[%s] : object" % (" ".join([("%s: %s"%(key, self.locals[key])) for key in self.locals]))
+        return "[%s]" % (" ".join([("%s: %s"%(key, self.locals[key])) for key in self.locals]))
     
     
     
