@@ -155,35 +155,45 @@ class Function(Data):
         return "%s: [ %s ] : function" % (self.name, ", ".join([str(x) for x in self.values]))
 
 class Type(Data):
-    def __init__(self, name, init_function, functions):
+    def __init__(self, name, params, functions):
         Data.__init__(self)
         self.type = "data_type"
         self.name = name
-        self.init_function = init_function
+        self.params = params
         self.functions = functions
     
     def execute(self, stack, variables, parent_function):
         #self.locals = {}
         
-        new_obj = Object(_type=self.name, name="", init_function=self.init_function, functions=self.functions)
-        variables["curr_function"] = new_obj
-        for cmd in self.init_function:
-            #print "cmd:", cmd
-            cmd.execute(stack, variables, parent_function=new_obj)           
-            if variables["ret_function"]: break
-        variables["ret_function"] = False
-        variables["curr_function"] = parent_function
-        stack.append(new_obj)
+        if len(stack) >= len(self.params):
+            param_names = [p.value for p in self.params]
+            param_values = []
+            for p in param_names:
+                param_values.append(stack.pop())
+            param_values.reverse()
+            new_obj = Object(_type=self.name, name="", params=self.params, param_values=param_values, functions=self.functions)
+            """variables["curr_function"] = new_obj
+            for cmd in self.init_function:
+                #print "cmd:", cmd
+                cmd.execute(stack, variables, parent_function=new_obj)           
+                if variables["ret_function"]: break
+            variables["ret_function"] = False
+            variables["curr_function"] = parent_function"""
+            stack.append(new_obj)
+        else:
+            stack.append(Error("Not enough parameneters"))
         
     def __str__(self):
         return "%s : type" % (self.name)
     
 class Object(Data):
-    def __init__(self, _type, name, init_function, functions):
+    def __init__(self, _type, name, params, param_values, functions):
         Data.__init__(self)
         self.type = _type
         self.name = name
-        self.locals = {"init": init_function}
+        self.locals = {}
+        for p, v in zip(params, param_values):
+            self.locals[p] = v
     
     def execute(self, stack, variables, parent_function):
         pass

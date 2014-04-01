@@ -103,9 +103,9 @@ PyCalc v0.1
     def parse_cmd(self, cmd_string):
         cmds = []
         strs = re.findall('"([^"]*)"', cmd_string)
-        cmd_string = re.sub('"([^"]*)"', "$str", cmd_string)
+        cmd_string = re.sub('"([^"]*)"', " $str ", cmd_string)
         imports = re.findall('{([^}]+)}', cmd_string)
-        cmd_string = re.sub('{([^}]+)}', "$imp", cmd_string)
+        cmd_string = re.sub('{([^}]+)}', " $imp ", cmd_string)
         cmd_string = cmd_string.replace("[", " [ ")
         cmd_string = cmd_string.replace("]", " ] ")
         for cmd in str.split(cmd_string):

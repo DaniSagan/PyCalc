@@ -927,9 +927,9 @@ class Type(Operator):
                 n3 = stack.pop()
                 n2 = stack.pop()
                 n1 = stack.pop()
-                variables[n2.value] = dfv.data.Type(name=n3.value,
-                                                    init_function=n2.values,
-                                                    functions=n1.values)
+                variables[n3.value] = dfv.data.Type(name=n3.value,
+                                                    params=n1.values,
+                                                    functions=n2.values)
             else:
                 stack.append(dfv.data.Error("Types not supported"))
         else:
@@ -946,7 +946,7 @@ class Edit(Operator):
         if len(stack) >= 1:            
             if stack[-1].type == "string":
                 n1 = stack.pop()
-                os.system("gedit %s" % n1.value)
+                os.system("gedit %s &" % n1.value)
             else:
                 stack.append(dfv.data.Error("Types not supported"))
         else:
