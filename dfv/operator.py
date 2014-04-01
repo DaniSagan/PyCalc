@@ -425,6 +425,13 @@ class Def(Operator):
                     variables["curr_function"].locals[n2.value] = n1
                 else: 
                     variables[n2.value] = n1
+            elif stack[-1].type == "string":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                if n2.value.startswith(".") and variables["curr_function"] != None: 
+                    variables["curr_function"].locals[n2.value] = n1
+                else: 
+                    variables[n2.value] = n1
             else:
                 stack.append(dfv.data.Error("Types not supported"))
         else:
@@ -947,6 +954,27 @@ class Edit(Operator):
             if stack[-1].type == "string":
                 n1 = stack.pop()
                 os.system("gedit %s &" % n1.value)
+            else:
+                stack.append(dfv.data.Error("Types not supported"))
+        else:
+            stack.append(dfv.data.Error("Not enough parameters"))
+            
+            
+class Get(Operator):
+    def __init__(self):
+        Operator.__init__(self)
+        self.type = "get"
+        self.word = "get"
+        
+    def execute(self, stack, variables):
+        if len(stack) >= 2:            
+            if stack[-2].type.startswith("object") and stack[-1].type == "string":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                if n2.value in n1.locals:
+                    stack.append(n1.locals[n2.value])
+                else:
+                    stack.append(dfv.data.Error("Variable %s not found in object" % n1.value))
             else:
                 stack.append(dfv.data.Error("Types not supported"))
         else:

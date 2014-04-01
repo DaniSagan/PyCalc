@@ -48,8 +48,7 @@
         <context ref="def:float"/>
 
         <context id="keywords" style-ref="keyword">
-          <prefix>(?&lt;!\%{symbolchar})</prefix>
-          <!--<suffix>(?!\%{symbolchar})</suffix>-->
+          <prefix>(?&lt;=([\s,^,\,,\"]))</prefix>
           <suffix>(?=([\s,\[,\]])|$|[,])</suffix>
           <keyword>\+</keyword>
           <keyword>\-</keyword>
@@ -90,6 +89,9 @@
           <keyword>\=</keyword>
           <keyword>\!\=</keyword>
           <keyword>quit</keyword>
+          <keyword>type</keyword>
+          <keyword>edit</keyword>
+          <keyword>get</keyword>
         </context>
 
         <context id="types" style-ref="type">

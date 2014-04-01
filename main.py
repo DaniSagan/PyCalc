@@ -75,7 +75,8 @@ PyCalc v0.1
                      "print": dfv.operator.Print(),
                      "vars": dfv.operator.Vars(),
                      "type": dfv.operator.Type(),
-                     "edit": dfv.operator.Edit()}
+                     "edit": dfv.operator.Edit(),
+                     "get": dfv.operator.Get()}
                      
         self.string_mode = False
         self.stack = dfv.data.List(parent=None)
@@ -84,7 +85,7 @@ PyCalc v0.1
     def run(self):
         print(self.TEXT)
         #while self.cmd != "quit":
-        #self.execute_cmds(self.parse_cmd(COMMAND))
+        self.execute_cmds(self.parse_cmd(COMMAND))
         while self.vars["running"]:
             #self.print_stack()
             self.print_list()

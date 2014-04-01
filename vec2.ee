@@ -1,0 +1,38 @@
+[".x" ".y"][]"vec2"type
+
+[   [".v1" ".v2"] def 
+    .v1 ".x" get
+    .v2 ".x" get
+    +
+    .v1 ".y" get
+    .v2 ".y" get
+    +
+    vec2 
+]"vec2:+"fun
+
+[   [".v1" ".v2"] def 
+    .v1 ".x" get
+    .v2 ".x" get
+    -
+    .v1 ".y" get
+    .v2 ".y" get
+    -
+    vec2 
+]"vec2:-"fun
+
+[   [".v1" ".v2"] def 
+    .v1 ".x" get
+    .v2 ".x" get
+    - 2 pow
+    .v1 ".y" get
+    .v2 ".y" get
+    - 2 pow
+    + 0.5 pow 
+]"vec2:abs"fun
+
+[   ".v1" def 
+    .v1 ".x" get print
+    " " print
+    .v1 ".y" get print
+]"vec2:print"fun
+

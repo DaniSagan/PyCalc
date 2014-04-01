@@ -31,6 +31,8 @@ class Cmd(Data):
                 #variables[self.value].execute(stack, variables, parent_function) 
             elif variables[self.value].type == "data_type":
                 variables[self.value].execute(stack, variables, parent_function)
+            elif variables[self.value].type.startswith("object"):
+                variables[self.value].execute(stack, variables, parent_function)
             else:
                 variables[self.value].execute(stack, variables)                
         # if not we try the local variables
@@ -38,6 +40,10 @@ class Cmd(Data):
         elif variables["curr_function"] != None and self.value in variables["curr_function"].locals:
             if variables["curr_function"].locals[self.value].type == "function":
                 variables["curr_function"].locals[self.value].execute(stack, variables, parent_function=variables["curr_function"])    
+            elif variables["curr_function"].locals[self.value].type == "data_type":
+                variables["curr_function"].locals[self.value].execute(stack, variables, parent_function)
+            elif variables["curr_function"].locals[self.value].type.startswith("object"):
+                variables["curr_function"].locals[self.value].execute(stack, variables, parent_function)
             else: 
                 variables["curr_function"].locals[self.value].execute(stack, variables)
         else:
@@ -171,14 +177,7 @@ class Type(Data):
             for p in param_names:
                 param_values.append(stack.pop())
             param_values.reverse()
-            new_obj = Object(_type=self.name, name="", params=self.params, param_values=param_values, functions=self.functions)
-            """variables["curr_function"] = new_obj
-            for cmd in self.init_function:
-                #print "cmd:", cmd
-                cmd.execute(stack, variables, parent_function=new_obj)           
-                if variables["ret_function"]: break
-            variables["ret_function"] = False
-            variables["curr_function"] = parent_function"""
+            new_obj = Object(_type=self.name, name="", params=param_names, param_values=param_values, functions=self.functions)
             stack.append(new_obj)
         else:
             stack.append(Error("Not enough parameneters"))
@@ -189,14 +188,14 @@ class Type(Data):
 class Object(Data):
     def __init__(self, _type, name, params, param_values, functions):
         Data.__init__(self)
-        self.type = _type
+        self.type = "object." + _type
         self.name = name
         self.locals = {}
         for p, v in zip(params, param_values):
             self.locals[p] = v
     
-    def execute(self, stack, variables, parent_function):
-        pass
+    """def execute(self, stack, variables, parent_function):
+        pass"""
         
     def __str__(self):
         return "[%s] : object" % (" ".join([("%s: %s"%(key, self.locals[key])) for key in self.locals]))
