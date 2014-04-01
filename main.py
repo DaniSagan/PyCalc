@@ -80,7 +80,9 @@ PyCalc v0.1
                      "vars": dfv.operator.Vars(),
                      "type": dfv.operator.Type(),
                      "edit": dfv.operator.Edit(),
-                     "get": dfv.operator.Get()}
+                     "get": dfv.operator.Get(),
+                     "swap": dfv.operator.Swap(),
+                     "who": dfv.operator.Who()}
                      
         self.string_mode = False
         self.stack = dfv.data.List(parent=None)

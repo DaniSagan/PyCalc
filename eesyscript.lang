@@ -48,7 +48,8 @@
         <context ref="def:float"/>
 
         <context id="keywords" style-ref="keyword">
-          <prefix>(?&lt;=([\s,^,\,,\"]))</prefix>
+          <!--<prefix>(?&lt;=([\s,^,\,,\"]))</prefix>-->
+          <prefix>(^)|(?&lt;=[\[\]\"^\s])</prefix>
           <suffix>(?=([\s,\[,\]])|$|[,])</suffix>
           <keyword>\+</keyword>
           <keyword>\-</keyword>
@@ -96,6 +97,8 @@
           <keyword>acos</keyword>
           <keyword>atan</keyword>
           <keyword>atan2</keyword>
+          <keyword>swap</keyword>
+          <keyword>who</keyword>
         </context>
 
         <context id="types" style-ref="type">

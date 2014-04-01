@@ -1048,3 +1048,33 @@ class Get(Operator):
                 stack.append(dfv.data.Error("Types not supported"))
         else:
             stack.append(dfv.data.Error("Not enough parameters"))
+            
+            
+class Swap(Operator):
+    def __init__(self):
+        Operator.__init__(self)
+        self.type = "swap"
+        self.word = "swap"
+        
+    def execute(self, stack, variables):
+        if len(stack) >= 2:
+            n2 = stack.pop()
+            n1 = stack.pop()
+            stack.append(n2)
+            stack.append(n1)            
+        else:
+            stack.append(dfv.data.Error("Not enough parameters"))
+            
+            
+class Who(Operator):
+    def __init__(self):
+        Operator.__init__(self)
+        self.type = "who"
+        self.word = "who"
+        
+    def execute(self, stack, variables):
+        if len(stack) >= 1:
+            n1 = stack.pop()
+            stack.append(dfv.data.String(n1.type))            
+        else:
+            stack.append(dfv.data.Error("Not enough parameters"))

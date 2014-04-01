@@ -206,6 +206,7 @@ class Object(Data):
         self.type = "object." + _type
         self.name = name
         self.locals = {}
+        self.params = params
         for p, v in zip(params, param_values):
             self.locals[p] = v
         self.locals["self"] = self 
@@ -214,7 +215,8 @@ class Object(Data):
         pass"""
         
     def __str__(self):
-        return "[%s]" % (" ".join([("%s: %s"%(key, self.locals[key])) for key in self.locals if key != "self"]))
+        #return "[%s]" % (" ".join([("%s: %s"%(key, self.locals[key])) for key in self.locals if key != "self"]))
+        return "[%s]" % (" ".join([("%s: %s"%(p_name, self.locals[p_name])) for p_name in self.params if p_name != "self"]))
     
     
     
