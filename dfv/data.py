@@ -155,16 +155,17 @@ class Function(Data):
         return "%s: [ %s ] : function" % (self.name, ", ".join([str(x) for x in self.values]))
 
 class Type(Data):
-    def __init__(self, name, init_function):
+    def __init__(self, name, init_function, functions):
         Data.__init__(self)
         self.type = "data_type"
         self.name = name
         self.init_function = init_function
+        self.functions = functions
     
     def execute(self, stack, variables, parent_function):
         #self.locals = {}
         
-        new_obj = Object(_type=self.name, name="", init_function=self.init_function)
+        new_obj = Object(_type=self.name, name="", init_function=self.init_function, functions=self.functions)
         variables["curr_function"] = new_obj
         for cmd in self.init_function:
             #print "cmd:", cmd
@@ -178,7 +179,7 @@ class Type(Data):
         return "%s : type" % (self.name)
     
 class Object(Data):
-    def __init__(self, _type, name, init_function):
+    def __init__(self, _type, name, init_function, functions):
         Data.__init__(self)
         self.type = _type
         self.name = name

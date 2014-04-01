@@ -74,7 +74,8 @@ PyCalc v0.1
                      "ret": dfv.operator.Ret(),
                      "print": dfv.operator.Print(),
                      "vars": dfv.operator.Vars(),
-                     "type": dfv.operator.Type()}
+                     "type": dfv.operator.Type(),
+                     "edit": dfv.operator.Edit()}
                      
         self.string_mode = False
         self.stack = dfv.data.List(parent=None)

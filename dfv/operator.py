@@ -4,6 +4,7 @@
 import math
 import dfv.data
 from main import App
+import os
 
 class Operator:
     def __init__(self):
@@ -921,12 +922,31 @@ class Type(Operator):
         self.word = "type"
         
     def execute(self, stack, variables):
-        if len(stack) >= 2:            
-            if stack[-2].type == "list" and stack[-1].type == "string":
+        if len(stack) >= 3:            
+            if stack[-3].type == "list" and stack[-2].type == "list" and stack[-1].type == "string":
+                n3 = stack.pop()
                 n2 = stack.pop()
                 n1 = stack.pop()
-                variables[n2.value] = dfv.data.Type(name=n2.value,
-                                                    init_function=n1.values)
+                variables[n2.value] = dfv.data.Type(name=n3.value,
+                                                    init_function=n2.values,
+                                                    functions=n1.values)
+            else:
+                stack.append(dfv.data.Error("Types not supported"))
+        else:
+            stack.append(dfv.data.Error("Not enough parameters"))
+            
+            
+class Edit(Operator):
+    def __init__(self):
+        Operator.__init__(self)
+        self.type = "edit"
+        self.word = "edit"
+        
+    def execute(self, stack, variables):
+        if len(stack) >= 1:            
+            if stack[-1].type == "string":
+                n1 = stack.pop()
+                os.system("gedit %s" % n1.value)
             else:
                 stack.append(dfv.data.Error("Types not supported"))
         else:
