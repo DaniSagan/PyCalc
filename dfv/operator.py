@@ -31,6 +31,10 @@ class Sum(Operator):
                 n2 = stack.pop()
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(n1.value + n2.value))
+            elif stack[-1].type == "integer" and stack[-2].type == "integer":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                stack.append(dfv.data.Integer(n1.value + n2.value))
             elif stack[-1].type == "complex" and stack[-2].type == "complex":
                 n2 = stack.pop()
                 n1 = stack.pop()
@@ -66,6 +70,10 @@ class Diff(Operator):
                 n2 = stack.pop()
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(n1.value - n2.value))
+            elif stack[-1].type == "integer" and stack[-2].type == "integer":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                stack.append(dfv.data.Integer(n1.value - n2.value))
             elif stack[-1].type == "complex" and stack[-2].type == "complex":
                 n2 = stack.pop()
                 n1 = stack.pop()
@@ -88,6 +96,10 @@ class Mult(Operator):
                 n2 = stack.pop()
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(n1.value * n2.value))
+            elif stack[-1].type == "integer" and stack[-2].type == "integer":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                stack.append(dfv.data.Integer(n1.value * n2.value))
             elif stack[-1].type == "complex" and stack[-2].type == "complex":
                 n2 = stack.pop()
                 n1 = stack.pop()
@@ -119,6 +131,10 @@ class Pow(Operator):
                 n2 = stack.pop()
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(n1.value ** n2.value))
+            elif stack[-1].type == "integer" and stack[-2].type == "integer":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                stack.append(dfv.data.Integer(n1.value ** n2.value))
             else:
                 stack.append(dfv.data.Error("Types not supported"))
         else:
@@ -140,6 +156,13 @@ class Div(Operator):
                     n2 = stack.pop()
                     n1 = stack.pop()
                     stack.append(dfv.data.Number(n1.value / n2.value))
+            elif stack[-1].type == "integer" and stack[-2].type == "integer":
+                if stack[-1].value == 0:
+                    stack.append(dfv.data.Error("Cannot divide by 0"))
+                else:
+                    n2 = stack.pop()
+                    n1 = stack.pop()
+                    stack.append(dfv.data.Integer(int(n1.value / n2.value)))
             elif stack[-1].type == "complex" and stack[-2].type == "complex":
                 if stack[-1].real_value == 0 and stack[-1].imag_value == 0:
                     stack.append(dfv.data.Error("Cannot divide by 0"))
@@ -208,6 +231,9 @@ class Abs(Operator):
             if stack[-1].type == "number":
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(abs(n1.value)))
+            elif stack[-1].type == "integer":
+                n1 = stack.pop()
+                stack.append(dfv.data.Integer(abs(n1.value)))
             elif stack[-1].type == "complex":
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(math.sqrt(n1.real_value**2 + n1.imag_value**2)))
@@ -390,6 +416,9 @@ class Neg(Operator):
             if stack[-1].type == "number":
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(-n1.value))
+            elif stack[-1].type == "integer":
+                n1 = stack.pop()
+                stack.append(dfv.data.Integer(-n1.value))
             elif stack[-1].type == "bool":
                 n1 = stack.pop()
                 stack.append(dfv.data.Bool(not n1.value))
@@ -464,7 +493,7 @@ class Def(Operator):
                     variables["curr_function"].locals[n2.value] = n1
                 else: 
                     variables[n2.value] = n1
-            elif stack[-1].type == "string" and stack[-2].type == "number":
+            elif stack[-1].type == "string" and stack[-2].type in ["number", "integer"]:
                 #if stack[-1].value not in variables:
                 n2 = stack.pop()
                 n1 = stack.pop()
@@ -564,7 +593,7 @@ class Fun(Operator):
                 n2 = stack.pop()
                 n1 = stack.pop()
                 variables[n2.value] = dfv.data.Function([n1], name=n2.value)
-            elif stack[-1].type == "string" and stack[-2].type == "number":
+            elif stack[-1].type == "string" and stack[-2].type in ["number", "integer"]:
                 n2 = stack.pop()
                 n1 = stack.pop()
                 variables[n2.value] = dfv.data.Function([n1], name=n2.value)
@@ -594,6 +623,11 @@ class Cat(Operator):
                 n2 = stack.pop()
                 n1 = stack.pop()
                 stack.append(dfv.data.String(n1.value + n2.value))
+            if stack[-1].type == "list" and stack[-2].type == "list":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                n1.values.extend(n2.values)
+                stack.append(dfv.data.List(parent=variables["curr_list"], values=n1.values))
             else:
                 stack.append(dfv.data.Error("Types not supported"))
         else:
@@ -707,6 +741,10 @@ class Eq(Operator):
                 n2 = stack.pop()
                 n1 = stack.pop()
                 stack.append(dfv.data.Bool(n1.value == n2.value))
+            elif stack[-1].type == "integer" and stack[-2].type == "integer":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                stack.append(dfv.data.Bool(n1.value == n2.value))
             elif stack[-1].type == "complex" and stack[-2].type == "complex":
                 n2 = stack.pop()
                 n1 = stack.pop()
@@ -737,6 +775,10 @@ class Neq(Operator):
                 n2 = stack.pop()
                 n1 = stack.pop()
                 stack.append(dfv.data.Bool(n1.value != n2.value))
+            elif stack[-1].type == "integer" and stack[-2].type == "integer":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                stack.append(dfv.data.Bool(n1.value != n2.value))
             elif stack[-1].type == "complex" and stack[-2].type == "complex":
                 n2 = stack.pop()
                 n1 = stack.pop()
@@ -763,6 +805,10 @@ class LessThan(Operator):
                 n2 = stack.pop()
                 n1 = stack.pop()
                 stack.append(dfv.data.Bool(n1.value < n2.value))
+            elif stack[-1].type == "integer" and stack[-2].type == "integer":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                stack.append(dfv.data.Bool(n1.value < n2.value))
             elif stack[-1].type == "string" and stack[-2].type == "string":
                 n2 = stack.pop()
                 n1 = stack.pop()
@@ -782,6 +828,10 @@ class LessEqThan(Operator):
     def execute(self, stack, variables):
         if len(stack) >= 2:            
             if stack[-1].type == "number" and stack[-2].type == "number":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                stack.append(dfv.data.Bool(n1.value <= n2.value))
+            elif stack[-1].type == "integer" and stack[-2].type == "integer":
                 n2 = stack.pop()
                 n1 = stack.pop()
                 stack.append(dfv.data.Bool(n1.value <= n2.value))
@@ -807,6 +857,10 @@ class GreaterThan(Operator):
                 n2 = stack.pop()
                 n1 = stack.pop()
                 stack.append(dfv.data.Bool(n1.value > n2.value))
+            elif stack[-1].type == "integer" and stack[-2].type == "integer":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                stack.append(dfv.data.Bool(n1.value > n2.value))
             elif stack[-1].type == "string" and stack[-2].type == "string":
                 n2 = stack.pop()
                 n1 = stack.pop()
@@ -825,6 +879,10 @@ class GreaterEqThan(Operator):
     def execute(self, stack, variables):
         if len(stack) >= 2:            
             if stack[-1].type == "number" and stack[-2].type == "number":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                stack.append(dfv.data.Bool(n1.value >= n2.value))
+            elif stack[-1].type == "integer" and stack[-2].type == "integer":
                 n2 = stack.pop()
                 n1 = stack.pop()
                 stack.append(dfv.data.Bool(n1.value >= n2.value))
@@ -859,6 +917,9 @@ class Inc(Operator):
             if stack[-1].type == "number":
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(n1.value + 1))
+            elif stack[-1].type == "integer":
+                n1 = stack.pop()
+                stack.append(dfv.data.Integer(n1.value + 1))
             else:
                 stack.append(dfv.data.Error("Types not supported"))
         else:
@@ -875,7 +936,10 @@ class Dec(Operator):
         if len(stack) >= 1:            
             if stack[-1].type == "number":
                 n1 = stack.pop()
-                stack.append(dfv.data.Number(n1.value + 1))
+                stack.append(dfv.data.Number(n1.value - 1))
+            elif stack[-1].type == "integer":
+                n1 = stack.pop()
+                stack.append(dfv.data.Integer(n1.value - 1))
             else:
                 stack.append(dfv.data.Error("Types not supported"))
         else:
@@ -894,6 +958,10 @@ class Mod(Operator):
                 n2 = stack.pop()
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(int(n1.value) % int(n2.value)))
+            if stack[-1].type == "integer" and stack[-2].type == "integer":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                stack.append(dfv.data.Integer((n1.value) % (n2.value)))
             else:
                 stack.append(dfv.data.Error("Types not supported"))
         else:
@@ -1043,7 +1111,14 @@ class Get(Operator):
                 if n2.value in n1.locals:
                     stack.append(n1.locals[n2.value])
                 else:
-                    stack.append(dfv.data.Error("Variable %s not found in object" % n1.value))
+                    stack.append(dfv.data.Error("Variable %s not found in object" % n2.value))
+            elif stack[-2].type == "list" and stack[-1].type == "integer":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                if n2.value < len(n1.locals):
+                    stack.append(n1.values[int(n2.value)])
+                else:
+                    stack.append(dfv.data.Error("Item %s not found in list" % n2.value))
             else:
                 stack.append(dfv.data.Error("Types not supported"))
         else:
@@ -1078,3 +1153,38 @@ class Who(Operator):
             stack.append(dfv.data.String(n1.type))            
         else:
             stack.append(dfv.data.Error("Not enough parameters"))
+            
+            
+class Int(Operator):
+    def __init__(self):
+        Operator.__init__(self)
+        self.type = "int"
+        self.word = "int"
+        
+    def execute(self, stack, variables):
+        if len(stack) >= 1:
+            if stack[-1].type == "number":
+                n1 = stack.pop()
+                stack.append(dfv.data.Integer(int(n1.value))) 
+            else:
+                stack.append(dfv.data.Error("Types not supported"))           
+        else:
+            stack.append(dfv.data.Error("Not enough parameters"))
+            
+
+class Error(Operator):
+    def __init__(self):
+        Operator.__init__(self)
+        self.type = "error"
+        self.word = "error"
+        
+    def execute(self, stack, variables):
+        if len(stack) >= 1:
+            if stack[-1].type == "string":
+                n1 = stack.pop()
+                stack.append(dfv.data.Error(n1.value)) 
+            else:
+                stack.append(dfv.data.Error("Types not supported"))           
+        else:
+            stack.append(dfv.data.Error("Not enough parameters"))
+                

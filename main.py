@@ -34,7 +34,9 @@ PyCalc v0.1
                      "*": dfv.operator.Mult(),
                      "/": dfv.operator.Div(),
                      "drop": dfv.operator.Drop(),
+                     "..": dfv.operator.Drop(),
                      "dup": dfv.operator.Dup(),
+                     ".": dfv.operator.Dup(),
                      "exp": dfv.operator.Exp(),
                      "neg": dfv.operator.Neg(),
                      "inv": dfv.operator.Inv(),
@@ -52,7 +54,7 @@ PyCalc v0.1
                      "pow": dfv.operator.Pow(),
                      "def": dfv.operator.Def(),
                      "cls": dfv.operator.Cls(),
-                     ".": dfv.operator.Eval(),
+                     "eval": dfv.operator.Eval(),
                      "fun": dfv.operator.Fun(),
                      "cat": dfv.operator.Cat(),
                      "pi": dfv.data.Number(math.pi),
@@ -82,7 +84,10 @@ PyCalc v0.1
                      "edit": dfv.operator.Edit(),
                      "get": dfv.operator.Get(),
                      "swap": dfv.operator.Swap(),
-                     "who": dfv.operator.Who()}
+                     "who": dfv.operator.Who(),
+                     "int": dfv.operator.Int(),
+                     "_": dfv.operator.Int(),
+                     "error": dfv.operator.Error()}
                      
         self.string_mode = False
         self.stack = dfv.data.List(parent=None)

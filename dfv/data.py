@@ -81,6 +81,16 @@ class Number(Data):
         
     def __str__(self):
         return str(self.value)
+    
+    
+class Integer(Data):
+    def __init__(self, value):
+        Data.__init__(self)
+        self.type = "integer"
+        self.value = value
+        
+    def __str__(self):
+        return str(self.value)
         
 
 class Bool(Data):

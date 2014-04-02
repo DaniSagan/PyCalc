@@ -50,3 +50,12 @@
     [.t1 .v2 "x" get * .t1 .v2 "y" get * vec2 ret] .t1 who "number" = if
     [.t1 .v2 dot ret] .t1 who "object.vec2" = if   
 ] "vec2:*" fun
+
+[   ".v" def
+    .v abs ".l" def
+    .v "x" get .l /
+    .v "y" get .l /
+    vec2
+] "vec2:unit" fun
+
+

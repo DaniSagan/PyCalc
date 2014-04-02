@@ -41,3 +41,11 @@
     [.t1 .v2 "x" get * .t1 .v2 "y" get * .t1 .v2 "z" get * vec3 ret] .t1 who "number" = if
     [.t1 .v2 dot ret] .t1 who "object.vec3" = if   
 ] "vec3:*" fun
+
+[   ".v" def
+    .v abs ".l" def
+    .v "x" get .l /
+    .v "y" get .l /
+    .v "z" get .l /
+    vec3
+] "vec3:unit" fun
