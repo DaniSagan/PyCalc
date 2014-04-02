@@ -1,0 +1,5 @@
+[   [".list" ".fn"] def
+    .list abs ".size" def
+    0 _ ".k" def
+    [.list .k get] .fn cat [.k ++ ".k" def] cat [.k .size <] while
+] "for" fun

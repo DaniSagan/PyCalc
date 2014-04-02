@@ -87,7 +87,10 @@ PyCalc v0.1
                      "who": dfv.operator.Who(),
                      "int": dfv.operator.Int(),
                      "_": dfv.operator.Int(),
-                     "error": dfv.operator.Error()}
+                     "error": dfv.operator.Error(),
+                     "pack": dfv.operator.Pack(),
+                     "npack": dfv.operator.Npack(),
+                     "unpack": dfv.operator.Unpack()}
                      
         self.string_mode = False
         self.stack = dfv.data.List(parent=None)

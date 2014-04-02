@@ -99,6 +99,13 @@
           <keyword>atan2</keyword>
           <keyword>swap</keyword>
           <keyword>who</keyword>
+          <keyword>int</keyword>
+          <keyword>_</keyword>
+          <keyword>error</keyword>
+          <keyword>pack</keyword>
+          <keyword>npack</keyword>
+          <keyword>unpack</keyword>
+          <keyword>cat</keyword>
         </context>
 
         <context id="types" style-ref="type">

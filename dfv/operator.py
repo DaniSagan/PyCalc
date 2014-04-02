@@ -5,6 +5,7 @@ import math
 import dfv.data
 from main import App
 import os
+import copy
 
 class Operator:
     def __init__(self):
@@ -471,7 +472,7 @@ class Dup(Operator):
         
     def execute(self, stack, variables):
         if len(stack) >= 1:
-            stack.append(stack[-1])
+            stack.append(copy.deepcopy(stack[-1]))
         else:
             stack.append(dfv.data.Error("Not enough parameters"))
             
@@ -1118,7 +1119,7 @@ class Get(Operator):
             elif stack[-2].type == "list" and stack[-1].type == "integer":
                 n2 = stack.pop()
                 n1 = stack.pop()
-                if n2.value < len(n1.locals):
+                if n2.value < len(n1.values):
                     stack.append(n1.values[int(n2.value)])
                 else:
                     stack.append(dfv.data.Error("Item %s not found in list" % n2.value))
@@ -1190,4 +1191,63 @@ class Error(Operator):
                 stack.append(dfv.data.Error("Types not supported"))           
         else:
             stack.append(dfv.data.Error("Not enough parameters"))
+
+
+class Pack(Operator):
+    def __init__(self):
+        Operator.__init__(self)
+        self.type = "pack"
+        self.word = "pack"
+        
+    def execute(self, stack, variables):
+        if len(stack) >= 1:
+            n1 = stack.pop()
+            new_list = dfv.data.List(parent=variables["curr_list"], values=[n1])
+            stack.append(new_list)
+        else:
+            stack.append(dfv.data.Error("Not enough parameters"))
+
+
+class Npack(Operator):
+    def __init__(self):
+        Operator.__init__(self)
+        self.type = "npack"
+        self.word = "npack"
+        
+    def execute(self, stack, variables):
+        if len(stack) >= 1:
+            if stack[-1].type == "integer":
+                n1 = stack.pop()
+                if len(stack) >= n1.value:
+                    new_list = dfv.data.List(parent=variables["curr_list"])
+                    for k in range(n1.value):
+                        new_list.append(stack.pop())
+                    new_list.values.reverse()
+                    stack.append(new_list)
+                else:
+                    stack.append(dfv.data.Error("Not enough parameters")) 
+            else:
+                stack.append(dfv.data.Error("Types not supported"))           
+        else:
+            stack.append(dfv.data.Error("Not enough parameters"))
+            
+            
+class Unpack(Operator):
+    def __init__(self):
+        Operator.__init__(self)
+        self.type = "unpack"
+        self.word = "unpack"
+        
+    def execute(self, stack, variables):
+        if len(stack) >= 1:
+            if stack[-1].type == "list":
+                n1 = stack.pop()
+                for k in range(len(n1.values)):
+                    stack.append(n1.values[k]) 
+                stack.append(dfv.data.Integer(len(n1.values)))
+            else:
+                stack.append(dfv.data.Error("Types not supported"))           
+        else:
+            stack.append(dfv.data.Error("Not enough parameters"))
+            
                 
