@@ -237,6 +237,9 @@ class Abs(Operator):
             elif stack[-1].type == "complex":
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(math.sqrt(n1.real_value**2 + n1.imag_value**2)))
+            elif stack[-1].type == "list":
+                n1 = stack.pop()
+                stack.append(dfv.data.Integer(len(n1.values)))
             else:
                 stack.append(dfv.data.Error("Types not supported"))
         else:
@@ -623,7 +626,7 @@ class Cat(Operator):
                 n2 = stack.pop()
                 n1 = stack.pop()
                 stack.append(dfv.data.String(n1.value + n2.value))
-            if stack[-1].type == "list" and stack[-2].type == "list":
+            elif stack[-1].type == "list" and stack[-2].type == "list":
                 n2 = stack.pop()
                 n1 = stack.pop()
                 n1.values.extend(n2.values)
