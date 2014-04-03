@@ -90,7 +90,8 @@ PyCalc v0.1
                      "error": dfv.operator.Error(),
                      "pack": dfv.operator.Pack(),
                      "npack": dfv.operator.Npack(),
-                     "unpack": dfv.operator.Unpack()}
+                     "unpack": dfv.operator.Unpack(),
+                     "real": dfv.operator.ToReal()}
                      
         self.string_mode = False
         self.stack = dfv.data.List(parent=None)
@@ -117,6 +118,7 @@ PyCalc v0.1
                 
     def parse_cmd(self, cmd_string):
         cmds = []
+        cmd_string = re.sub('#([^"]*)#', "", cmd_string)
         strs = re.findall('"([^"]*)"', cmd_string)
         cmd_string = re.sub('"([^"]*)"', " $str ", cmd_string)
         imports = re.findall('{([^}]+)}', cmd_string)
@@ -125,7 +127,10 @@ PyCalc v0.1
         cmd_string = cmd_string.replace("]", " ] ")
         for cmd in str.split(cmd_string):
             if is_number(cmd):
-                cmds.append(dfv.data.Number(float(cmd)))
+                if "." in cmd:
+                    cmds.append(dfv.data.Number(float(cmd)))
+                else:
+                    cmds.append(dfv.data.Integer(int(cmd)))
             elif cmd == "$str":
                 cmds.append(dfv.data.String(strs.pop(0)))
             elif cmd == "$imp":

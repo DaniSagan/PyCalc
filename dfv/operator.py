@@ -1250,4 +1250,21 @@ class Unpack(Operator):
         else:
             stack.append(dfv.data.Error("Not enough parameters"))
             
+            
+class ToReal(Operator):
+    def __init__(self):
+        Operator.__init__(self)
+        self.type = "real"
+        self.word = "real"
+        
+    def execute(self, stack, variables):
+        if len(stack) >= 1:
+            if stack[-1].type == "integer":
+                n1 = stack.pop()
+                stack.append(dfv.data.Number(float(n1.value)))
+            else:
+                stack.append(dfv.data.Error("Types not supported"))           
+        else:
+            stack.append(dfv.data.Error("Not enough parameters"))
+            
                 

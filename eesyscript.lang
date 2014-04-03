@@ -21,9 +21,14 @@
     <context id="eesyscript">
       <include>
 
-        <context id="comment" style-ref="comment">
+        <!--<context id="comment" style-ref="comment">
           <start>{</start>
           <end>}</end>
+        </context>-->
+        
+        <context id="comment" style-ref="comment">
+          <start>#</start>
+          <end>#</end>
         </context>
 
         <context id="string" end-at-line-end="false" style-ref="string">
@@ -106,6 +111,10 @@
           <keyword>npack</keyword>
           <keyword>unpack</keyword>
           <keyword>cat</keyword>
+          <keyword>vec2</keyword>
+          <keyword>vec3</keyword>
+          <keyword>for</keyword>
+          <keyword>real</keyword>
         </context>
 
         <context id="types" style-ref="type">

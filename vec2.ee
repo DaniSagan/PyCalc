@@ -13,8 +13,8 @@
 ] "vec2:-" fun
 
 [   ".v1" def 
-    .v1 "x" get 2 pow
-    .v1 "y" get 2 pow
+    .v1 "x" get 2.0 pow
+    .v1 "y" get 2.0 pow
     + 0.5 pow 
 ] "vec2:abs" fun
 

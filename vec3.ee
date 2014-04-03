@@ -15,9 +15,9 @@
 ] "vec3:-" fun
 
 [   ".v" def 
-    .v "x" get 2 pow
-    .v "y" get 2 pow
-    .v "z" get 2 pow
+    .v "x" get 2.0 pow
+    .v "y" get 2.0 pow
+    .v "z" get 2.0 pow
     + + 0.5 pow 
 ] "vec3:abs" fun
 

@@ -1,5 +1,36 @@
+#   
+*   util.ee
+*   Created by Daniel Fernández Villanueva
+#
+
+#   Function for  
+*   Executes the function .fn for each element of .list #
 [   [".list" ".fn"] def
     .list abs ".size" def
-    0 _ ".k" def
+    0 ".k" def
     [.list .k get] .fn cat [.k ++ ".k" def] cat [.k .size <] while
 ] "for" fun
+
+#   Function range  
+*   Creates a list of integers from 0 to .n #
+[   ".n" def
+    [   0 ".k" def
+        [.k . ++ ".k" def][.k .n <] while
+        .n npack
+    ][  "Types not supported" error
+    ] .n who "integer" = ifelse
+] "range" fun
+
+   
+#   Function is_prime  
+*   Returns true if the number .n is prime, and false otherwise #
+[   ".n" def
+    2 ".k" def
+    .n real 0.5 pow _ ".lim" def
+    [   [false ret] .n .k % 0 = if 
+        .k 2 + ".k" def
+    ][.k .lim <=]while
+    true
+] "is_prime" fun
+
+#   End of file   #
