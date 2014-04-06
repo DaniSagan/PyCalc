@@ -5,6 +5,8 @@ import math
 import dfv.data
 import dfv.operator
 import re
+import matplotlib.pyplot as plt
+import logging
 
 def is_number(string):
     try:
@@ -91,7 +93,8 @@ PyCalc v0.1
                      "pack": dfv.operator.Pack(),
                      "npack": dfv.operator.Npack(),
                      "unpack": dfv.operator.Unpack(),
-                     "real": dfv.operator.ToReal()}
+                     "real": dfv.operator.ToReal(),
+                     "set": dfv.operator.Set()}
                      
         self.string_mode = False
         self.stack = dfv.data.List(parent=None)
@@ -160,6 +163,7 @@ PyCalc v0.1
         self.execute_cmds(self.parse_cmd(lines))
 
 def main():    
+    logging.basicConfig(filename='log/log.log', level=logging.DEBUG)
     app = App()
     app.run()
     

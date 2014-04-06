@@ -524,7 +524,7 @@ class Def(Operator):
                 n2 = stack.pop()
                 n1 = stack.pop()
                 if n2.value.startswith(".") and variables["curr_function"] != None: 
-                    variables["curr_function"].locals[n2.value] = n1
+                    variables["curr_function"].locals[n2.value] = copy.deepcopy(n1)
                 else: 
                     variables[n2.value] = n1
             elif stack[-1].type == "string":
@@ -553,10 +553,23 @@ class Eval(Operator):
     def __init__(self):
         Operator.__init__(self)
         self.type = "eval"
-        self.word = "."
+        self.word = "eval"
         
     def execute(self, stack, variables):
-        pass
+        if len(stack) >= 2:            
+            if stack[-1].type == "string" and stack[-2].type == "list":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                str_cmd = n2.value
+                str_cmd += "("                  
+                str_cmd += ", ".join([str(n) for n in n1.values])
+                str_cmd += ")"
+                res = eval(str_cmd)
+                stack.append_from_python_obj(res)
+            else:
+                stack.append(dfv.data.Error("Types not supported"))
+        else:
+            stack.append(dfv.data.Error("Not enough parameters"))
         
 class StartList(Operator):
     def __init__(self):
@@ -630,8 +643,10 @@ class Cat(Operator):
             elif stack[-1].type == "list" and stack[-2].type == "list":
                 n2 = stack.pop()
                 n1 = stack.pop()
-                n1.values.extend(n2.values)
-                stack.append(dfv.data.List(parent=variables["curr_list"], values=n1.values))
+                #n1.values.extend(n2.values)
+                new_list = copy.deepcopy(n1.values)
+                new_list.extend(copy.deepcopy(n2.values))
+                stack.append(dfv.data.List(parent=variables["curr_list"], values=new_list))
             else:
                 stack.append(dfv.data.Error("Types not supported"))
         else:
@@ -1121,6 +1136,35 @@ class Get(Operator):
                 n1 = stack.pop()
                 if n2.value < len(n1.values):
                     stack.append(n1.values[int(n2.value)])
+                else:
+                    stack.append(dfv.data.Error("Item %s not found in list" % n2.value))
+            else:
+                stack.append(dfv.data.Error("Types not supported"))
+        else:
+            stack.append(dfv.data.Error("Not enough parameters"))
+            
+            
+class Set(Operator):
+    def __init__(self):
+        Operator.__init__(self)
+        self.type = "set"
+        self.word = "set"
+        
+    def execute(self, stack, variables):
+        if len(stack) >= 3:            
+            if stack[-3].type.startswith("object") and stack[-1].type == "string":
+                n3 = stack.pop()
+                n2 = stack.pop()
+                n1 = stack.pop()
+                n1.locals[n3.value] = n2
+                stack.append(n1)
+            elif stack[-3].type == "list" and stack[-1].type == "integer":
+                n3 = stack.pop()
+                n2 = stack.pop()
+                n1 = stack.pop()                
+                if n3.value < len(n1.values):
+                    n1.values[n3.value] = n2.value
+                    stack.append(n1)
                 else:
                     stack.append(dfv.data.Error("Item %s not found in list" % n2.value))
             else:

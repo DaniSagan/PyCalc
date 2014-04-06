@@ -1,6 +1,8 @@
 #! /usr/bin/python
 # -*- coding=utf-8 -*-
 
+import copy
+import logging
         
 class Data:
     def __init__(self):
@@ -13,6 +15,9 @@ class Data:
         return self.value
         
     def execute(self, stack, variables, parent_function=None):
+        logging.debug("*****************************************")
+        logging.debug("stack: %s" % stack)
+        logging.debug("cmd: %s" % self.value)
         stack.append(self)
 
 
@@ -24,10 +29,17 @@ class Cmd(Data):
     
     def execute(self, stack, variables, parent_function=None):
         new_value = ""
+        logging.debug("*****************************************")
+        logging.debug("stack: %s" % stack)
+        logging.debug("cmd: %s" % self.value)
+        #logging.debug("vars: %s" % variables)
+        
         if len(stack) >= 1:
             last_type = stack[-1].type
             if last_type.startswith("object."):
                 last_type = last_type[7:]
+                new_value = last_type + ":" + self.value
+            else:
                 new_value = last_type + ":" + self.value
         
         if new_value in variables:
@@ -58,9 +70,11 @@ class Cmd(Data):
                 variables["curr_function"].locals[self.value].execute(stack, variables)
         else:
             stack.append(Error("Command \"%s\" not found" % self.value))
+            
+        
         
     def __str__(self):
-        return "%s : %s" % (self.value, self.type)
+        return "%s" % (self.value)
 
 
 class String(Data):
@@ -134,7 +148,7 @@ class List(Data):
         self.type = "list"
         self.parent = parent
         self.values = []
-        if values != None: self.values.extend(values)
+        if values != None: self.values.extend(copy.deepcopy(values))
         
     def append(self, value):
         self.values.append(value)
@@ -156,6 +170,16 @@ class List(Data):
         
     def __getitem__(self, k):
         return self.values[k]
+    
+    def append_from_python_obj(self, pyton_obj):
+        if type(pyton_obj) is int:
+            self.values.append(Integer(pyton_obj))
+        elif type(pyton_obj) is float:
+            self.values.append(Number(pyton_obj))
+        elif type(pyton_obj) is str:
+            self.values.append(String(pyton_obj))
+        elif type(pyton_obj) is bool:
+            self.values.append(Bool(pyton_obj))
 
         
 class Function(Data):
@@ -168,6 +192,10 @@ class Function(Data):
     
     def execute(self, stack, variables, parent_function):
         #self.locals = {}
+        #if variables["curr_function"] != None:
+        #    for loc in variables["curr_function"].locals:
+            
+        
         variables["curr_function"] = self
         for cmd in self.values:
             #print "cmd:", cmd
@@ -199,11 +227,12 @@ class Type(Data):
             new_obj = Object(_type=self.name, name="", params=param_names, param_values=param_values, init_function=self.init_function)
             
             variables["curr_function"] = new_obj
+            stack.append(new_obj)
             for cmd in self.init_function:
                 cmd.execute(stack, variables, parent_function=new_obj)
             variables["curr_function"] = parent_function 
                 
-            stack.append(new_obj)
+            #stack.append(new_obj)
         else:
             stack.append(Error("Not enough parameneters"))
         
