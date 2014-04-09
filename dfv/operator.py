@@ -32,6 +32,14 @@ class Sum(Operator):
                 n2 = stack.pop()
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(n1.value + n2.value))
+            elif stack[-1].type == "integer" and stack[-2].type == "number":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                stack.append(dfv.data.Number(n1.value + float(n2.value)))
+            elif stack[-1].type == "number" and stack[-2].type == "integer":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                stack.append(dfv.data.Number(float(n1.value) + n2.value))
             elif stack[-1].type == "integer" and stack[-2].type == "integer":
                 n2 = stack.pop()
                 n1 = stack.pop()
@@ -75,6 +83,14 @@ class Diff(Operator):
                 n2 = stack.pop()
                 n1 = stack.pop()
                 stack.append(dfv.data.Integer(n1.value - n2.value))
+            elif stack[-1].type == "integer" and stack[-2].type == "number":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                stack.append(dfv.data.Number(n1.value - float(n2.value)))
+            elif stack[-1].type == "number" and stack[-2].type == "integer":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                stack.append(dfv.data.Number(float(n1.value) - n2.value))
             elif stack[-1].type == "complex" and stack[-2].type == "complex":
                 n2 = stack.pop()
                 n1 = stack.pop()
@@ -101,6 +117,14 @@ class Mult(Operator):
                 n2 = stack.pop()
                 n1 = stack.pop()
                 stack.append(dfv.data.Integer(n1.value * n2.value))
+            elif stack[-1].type == "integer" and stack[-2].type == "number":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                stack.append(dfv.data.Number(n1.value * float(n2.value)))
+            elif stack[-1].type == "number" and stack[-2].type == "integer":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                stack.append(dfv.data.Number(float(n1.value) * n2.value))
             elif stack[-1].type == "complex" and stack[-2].type == "complex":
                 n2 = stack.pop()
                 n1 = stack.pop()
@@ -136,6 +160,14 @@ class Pow(Operator):
                 n2 = stack.pop()
                 n1 = stack.pop()
                 stack.append(dfv.data.Integer(n1.value ** n2.value))
+            elif stack[-1].type == "integer" and stack[-2].type == "number":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                stack.append(dfv.data.Integer(n1.value ** float(n2.value)))
+            elif stack[-1].type == "number" and stack[-2].type == "integer":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                stack.append(dfv.data.Integer(float(n1.value) ** n2.value))
             else:
                 stack.append(dfv.data.Error("Types not supported"))
         else:
@@ -163,7 +195,21 @@ class Div(Operator):
                 else:
                     n2 = stack.pop()
                     n1 = stack.pop()
-                    stack.append(dfv.data.Integer(int(n1.value / n2.value)))
+                    stack.append(dfv.data.Number(float(n1.value) / float(n2.value)))
+            elif stack[-1].type == "integer" and stack[-2].type == "number":
+                if stack[-1].value == 0:
+                    stack.append(dfv.data.Error("Cannot divide by 0"))
+                else:
+                    n2 = stack.pop()
+                    n1 = stack.pop()
+                    stack.append(dfv.data.Number(float(n1.value) / n2.value))
+            elif stack[-1].type == "number" and stack[-2].type == "integer":
+                if stack[-1].value == 0:
+                    stack.append(dfv.data.Error("Cannot divide by 0"))
+                else:
+                    n2 = stack.pop()
+                    n1 = stack.pop()
+                    stack.append(dfv.data.Number(n1.value / float(n2.value)))
             elif stack[-1].type == "complex" and stack[-2].type == "complex":
                 if stack[-1].real_value == 0 and stack[-1].imag_value == 0:
                     stack.append(dfv.data.Error("Cannot divide by 0"))
@@ -176,6 +222,27 @@ class Div(Operator):
                     d = n2.imag_value
                     stack.append(dfv.data.Complex((a*c+b*d)/(c**2+d**2), 
                                                   (b*c-a*d)/(c**2+d**2)))
+            else:
+                stack.append(dfv.data.Error("Types not supported"))
+        else:
+            stack.append(dfv.data.Error("Not enough parameters"))
+
+
+class IntDiv(Operator):
+    def __init__(self):
+        Operator.__init__(self)
+        self.type = "intdiv"
+        self.word = "//"
+        
+    def execute(self, stack, variables):
+        if len(stack) >= 2:            
+            if stack[-1].type == "integer" and stack[-2].type == "integer":
+                if stack[-1].value == 0:
+                    stack.append(dfv.data.Error("Cannot divide by 0"))
+                else:
+                    n2 = stack.pop()
+                    n1 = stack.pop()
+                    stack.append(dfv.data.Integer(int(n1.value / n2.value)))
             else:
                 stack.append(dfv.data.Error("Types not supported"))
         else:

@@ -35,6 +35,7 @@ PyCalc v0.1
                      "-": dfv.operator.Diff(),
                      "*": dfv.operator.Mult(),
                      "/": dfv.operator.Div(),
+                     "//": dfv.operator.IntDiv(),
                      "drop": dfv.operator.Drop(),
                      "..": dfv.operator.Drop(),
                      "dup": dfv.operator.Dup(),

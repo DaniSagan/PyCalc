@@ -62,12 +62,18 @@
 [   ".n" def
     2 ".k" def
     [] ".res" def
-    [   [   .n .k / ".n" def 
+    [   [   .n .k // ".n" def 
             .res .k pack cat ".res" def
         ][.k ++ ".k" def] 
         .n .k % 0 = ifelse
     ][.n 1 !=] while
     .res
 ] "integer:factor" fun
+
+[   [".n1" ".n2"] def
+    [.n1 ret] .n1 .n2 = if
+    [1 ret] .n1 1 = .n2 1 = or if
+    [.n1 .n2 - .n2 gcd][.n2 .n1 - .n1 gcd] .n1 .n2 > ifelse
+] "integer:gcd" fun
 
 #   End of file   #

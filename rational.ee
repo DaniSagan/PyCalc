@@ -1,0 +1,59 @@
+["numerator" "denominator"] [simplify] "rational" type
+
+
+[   ".q" def
+    .q "numerator" get ".n" def
+    .q "denominator" get ".d" def
+    [   .n abs neg ".n" def .d abs ".d" def
+    ][  .n abs ".n" def .d abs ".d" def
+    ] .n .d * 0 < ifelse
+    .n abs .d gcd ".g" def
+    .q .n .g // "numerator" set ..
+    .q .d .g // "denominator" set ..
+    .q
+] "rational:simplify" fun
+
+
+[   [".q1" ".q2"] def
+    .q1 "numerator" get ".n1" def    
+    .q1 "denominator" get ".d1" def
+    .q2 "numerator" get ".n2" def    
+    .q2 "denominator" get ".d2" def
+    .n1 .d2 * .n2 .d1 * +
+    .d1 .d2 *
+    rational
+] "rational:+" fun
+
+
+[   ".q" def
+    .q "numerator" get neg ".n" def
+    .q .n "numerator" set
+] "rational:neg" fun
+
+
+[   [".q1" ".q2"] def
+    .q1 .q2 neg +
+] "rational:-" fun
+
+
+[   [".q1" ".q2"] def
+    .q1 "numerator" get ".n1" def    
+    .q1 "denominator" get ".d1" def
+    .q2 "numerator" get ".n2" def    
+    .q2 "denominator" get ".d2" def
+    .n1 .n2 *
+    .d1 .d2 *
+    rational
+] "rational:*" fun
+
+
+[   ".q" def
+    .q "numerator" get ".n" def
+    .q "denominator" get ".d" def
+    .d .n rational
+] "rational:inv" fun
+
+
+[   [".q1" ".q2"] def
+    .q1 .q2 inv *
+] "rational:/" fun
