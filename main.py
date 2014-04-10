@@ -178,6 +178,10 @@ PyCalc v0.1
 
 def main():    
     path = os.path.dirname(os.path.abspath(__file__))
+    if not os.path.exists(path + '/log'):
+        os.makedirs(path + '/log')
+    if not os.path.exists(path + '/script'):
+        os.makedirs(path + '/script')
     logging.basicConfig(filename=path + '/log/log.log', level=logging.DEBUG)
     app = App()
     app.run()
