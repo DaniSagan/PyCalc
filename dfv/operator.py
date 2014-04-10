@@ -543,7 +543,62 @@ class Dup(Operator):
         else:
             stack.append(dfv.data.Error("Not enough parameters"))
             
-            
+
+class Def(Operator):
+    def __init__(self):
+        Operator.__init__(self)
+        self.type = "def"
+        self.word = "def"
+        
+    def execute(self, stack, variables):
+        if len(stack) >= 2:            
+            if stack[-1].type == "list":
+                n1 = stack.pop()
+                for n in reversed(n1):
+                    stack.append(n)
+                    self.execute(stack, variables)
+            elif stack[-1].type == "string":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                if ":" in n2.value:
+                    cmds = n2.value.split(":", 1)
+                    #if variables["curr_function"] != None:
+                    curr_function = variables["curr_function"]
+                    if curr_function == None:
+                        if cmds[0] in variables:                        
+                            variables["curr_function"] = variables[cmds[0]]
+                            stack.append(n1)
+                            stack.append(dfv.data.String(cmds[1]))
+                            self.execute(stack, variables)
+                            variables["curr_function"] = curr_function
+                        else:
+                            stack.append(dfv.data.Error("Variable %s not found" % cmds[0]))
+                    else:
+                        if cmds[0] in variables:
+                            variables["curr_function"] = variables[cmds[0]]
+                            stack.append(n1)
+                            stack.append(dfv.data.String(cmds[1]))
+                            self.execute(stack, variables)
+                            variables["curr_function"] = curr_function
+                        elif cmds[0] in variables["curr_function"].locals:
+                            variables["curr_function"] = curr_function.locals[cmds[0]]
+                            stack.append(n1)
+                            stack.append(dfv.data.String(cmds[1]))
+                            self.execute(stack, variables)
+                            variables["curr_function"] = curr_function
+                        else:
+                            stack.append(dfv.data.Error("Variable %s not found" % cmds[0]))
+                elif n2.value.startswith(".") or variables["curr_function"] == None:
+                    variables[n2.value] = n1
+                else:
+                    variables["curr_function"].locals[n2.value] = n1            
+            else:
+                stack.append(dfv.data.Error("Types not supported"))
+        else:
+            stack.append(dfv.data.Error("Not enough parameters"))
+
+
+"""            
 class Def(Operator):
     def __init__(self):
         Operator.__init__(self)
@@ -604,7 +659,7 @@ class Def(Operator):
             else:
                 stack.append(dfv.data.Error("Types not supported"))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            stack.append(dfv.data.Error("Not enough parameters"))"""
             
             
 class Cls(Operator):

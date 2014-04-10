@@ -1,4 +1,4 @@
-{util.ee}
-{vec2.ee}
-{vec3.ee}
-{rational.ee}
+{lib/util.ee}
+{lib/vec2.ee}
+{lib/vec3.ee}
+{lib/rational.ee}

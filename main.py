@@ -125,13 +125,22 @@ PyCalc v0.1
                 
     def parse_cmd(self, cmd_string):
         cmds = []
+        
+        # check for comments and delete them
         cmd_string = re.sub('#([^"]*)#', "", cmd_string)
+        
+        # check for strings
         strs = re.findall('"([^"]*)"', cmd_string)
         cmd_string = re.sub('"([^"]*)"', " $str ", cmd_string)
+        
+        # check for imports
         imports = re.findall('{([^}]+)}', cmd_string)
         cmd_string = re.sub('{([^}]+)}', " $imp ", cmd_string)
+        
+        # lists
         cmd_string = cmd_string.replace("[", " [ ")
         cmd_string = cmd_string.replace("]", " ] ")
+        
         for cmd in str.split(cmd_string):
             if is_number(cmd):
                 if "." in cmd:
