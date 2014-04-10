@@ -127,7 +127,8 @@ PyCalc v0.1
         cmds = []
         
         # check for comments and delete them
-        cmd_string = re.sub('#([^"]*)#', "", cmd_string)
+        #cmd_string = re.sub('#([^"]*)#', "", cmd_string)
+        cmd_string = re.sub('#([^#]*)#', "", cmd_string)
         
         # check for strings
         strs = re.findall('"([^"]*)"', cmd_string)

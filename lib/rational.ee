@@ -2,8 +2,8 @@
 
 
 [   "q" def
-    q "numerator" get ".n" def
-    q "denominator" get ".d" def
+    q:numerator "n" def
+    q:denominator "d" def
     [   n abs neg "n" def d abs "d" def
     ][  n abs "n" def d abs "d" def
     ] n d * 0 < ifelse
@@ -15,10 +15,10 @@
 
 
 [   ["q1" "q2"] def
-    q1 "numerator" get ".n1" def    
-    q1 "denominator" get ".d1" def
-    q2 "numerator" get ".n2" def    
-    q2 "denominator" get ".d2" def
+    q1:numerator "n1" def    
+    q1:denominator "d1" def
+    q2:numerator "n2" def    
+    q2:denominator "d2" def
     n1 d2 * n2 d1 * +
     d1 d2 *
     rational
@@ -26,7 +26,7 @@
 
 
 [   "q" def
-    q "numerator" get neg "n" def
+    q:numerator neg "n" def
     q n "numerator" set
 ] "rational:neg" fun
 
@@ -37,10 +37,10 @@
 
 
 [   ["q1" "q2"] def
-    q1 "numerator" get "n1" def    
-    q1 "denominator" get "d1" def
-    q2 "numerator" get "n2" def    
-    q2 "denominator" get "d2" def
+    q1:numerator "n1" def    
+    q1:denominator "d1" def
+    q2:numerator "n2" def    
+    q2:denominator  "d2" def
     n1 n2 *
     d1 d2 *
     rational
@@ -48,8 +48,8 @@
 
 
 [   "q" def
-    q "numerator" get "n" def
-    q "denominator" get "d" def
+    q:numerator "n" def
+    q:denominator "d" def
     d n rational
 ] "rational:inv" fun
 

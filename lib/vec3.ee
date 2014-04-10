@@ -1,36 +1,36 @@
 ["x" "y" "z"][] "vec3" type
 
 [   ["v1" "v2"] def 
-    v1 "x" get v2 "x" get +
-    v1 "y" get v2 "y" get +
-    v1 "z" get v2 "z" get +
+    v1:x v2:x +
+    v1:y v2:y +
+    v1:z v2:z +
     vec3 
 ] "vec3:+" fun
 
 [   ["v1" "v2"] def 
-    v1 "x" get v2 "x" get -
-    v1 "y" get v2 "y" get -
-    v1 "z" get v2 "z" get -
+    v1:x v2:x -
+    v1:y v2:y -
+    v1:z v2:z -
     vec3 
 ] "vec3:-" fun
 
 [   "v" def 
-    v "x" get 2.0 pow
-    v "y" get 2.0 pow
-    v "z" get 2.0 pow
+    v:x 2.0 pow
+    v:y 2.0 pow
+    v:z 2.0 pow
     + + 0.5 pow 
 ] "vec3:abs" fun
 
 [   ["v1" "v2"] def 
-    v1 "x" get v2 "x" get *
-    v1 "y" get v2 "y" get *
-    v1 "z" get v2 "z" get *
+    v1:x v2:x *
+    v1:y v2:y *
+    v1:z v2:z *
     + +
 ] "vec3:dot" fun
 
 [   ["v1" "v2"] def 
-    v1 "x" get v1 "y" get v1 "z" get ["x1" "y1" "z1"] def
-    v2 "x" get v2 "y" get v2 "z" get ["x2" "y2" "z2"] def
+    v1:x v1:y v1:z ["x1" "y1" "z1"] def
+    v2:x v2:y v2:z ["x2" "y2" "z2"] def
     y1 z2 * z1 y2 * -
     z1 x2 * x1 z2 * -
     x1 y2 * x2 y1 * -
@@ -38,14 +38,14 @@
 ] "vec3:cross" fun
 
 [   ["t1" "v2"] def
-    [t1 v2 "x" get * t1 v2 "y" get * t1 v2 "z" get * vec3 ret] t1 who "number" = if
+    [t1 v2:x * t1 v2:y * t1 v2:z * vec3 ret] t1 who "number" = if
     [t1 v2 dot ret] t1 who "object.vec3" = if   
 ] "vec3:*" fun
 
 [   "v" def
     v abs "l" def
-    v "x" get l /
-    v "y" get l /
-    v "z" get l /
+    v:x l /
+    v:y l /
+    v:z l /
     vec3
 ] "vec3:unit" fun

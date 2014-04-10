@@ -1,60 +1,60 @@
 ["x" "y"][] "vec2" type
 
 [   ["v1" "v2"] def 
-    v1 "x" get v2 "x" get +
-    v1 "y" get v2 "y" get +
+    v1:x v2:x +
+    v1:y v2:y +
     vec2 
 ] "vec2:+" fun
 
 [   ["v1" "v2"] def 
-    v1 "x" get v2 "x" get -
-    v1 "y" get v2 "y" get -
+    v1:x v2:x -
+    v1:y v2:y -
     vec2 
 ] "vec2:-" fun
 
 [   "v1" def 
-    v1 "x" get 2.0 pow
-    v1 "y" get 2.0 pow
+    v1:x 2.0 pow
+    v1:y 2.0 pow
     + 0.5 pow 
 ] "vec2:abs" fun
 
 [   "v" def
-    v "y" get
-    v "x" get
+    v:y
+    v:x
     atan2
 ] "vec2:arg" fun
 
 [   ["ang" "v"] def
-    v "x" get ang cos *
-    v "y" get ang sin *
+    v:x ang cos *
+    v:y ang sin *
     -
-    v "x" get ang sin *
-    v "y" get ang cos *
+    v:x ang sin *
+    v:y ang cos *
     +
     vec2
 ] "vec2:rot" fun
 
 [   "v1" def 
-    v1 "x" get print
+    v1:x print
     " " print
-    v1 "y" get print
+    v1:y print
 ] "vec2:print" fun
 
 [   ["v1" "v2"] def 
-    v1 "x" get v2 "x" get *
-    v1 "y" get v2 "y" get *
+    v1:x v2:x *
+    v1:y v2:y *
     + 
 ] "vec2:dot" fun
 
 [   ["t1" "v2"] def
-    [t1 v2 "x" get * t1 v2 "y" get * vec2 ret] t1 who "number" = if
+    [t1 v2:x * t1 v2:y * vec2 ret] t1 who "number" = if
     [t1 v2 dot ret] t1 who "object.vec2" = if   
 ] "vec2:*" fun
 
 [   "v" def
     v abs "l" def
-    v "x" get l /
-    v "y" get l /
+    v:x l /
+    v:y l /
     vec2
 ] "vec2:unit" fun
 
