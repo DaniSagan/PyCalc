@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 import logging
 import os
 import sys
+import readline
 
 def is_number(string):
     try:
@@ -148,6 +149,10 @@ PyCalc v0.1
                     cmds.append(dfv.data.Number(float(cmd)))
                 else:
                     cmds.append(dfv.data.Integer(int(cmd)))
+            elif cmd == "true":
+                cmds.append(dfv.data.Bool(True))
+            elif cmd == "false":
+                cmds.append(dfv.data.Bool(False))
             elif cmd == "$str":
                 cmds.append(dfv.data.String(strs.pop(0)))
             elif cmd == "$imp":

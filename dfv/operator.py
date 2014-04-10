@@ -671,11 +671,11 @@ class Cls(Operator):
     def execute(self, stack, variables):
         stack.values[:] = []
         
-class Eval(Operator):
+class PyEval(Operator):
     def __init__(self):
         Operator.__init__(self)
-        self.type = "eval"
-        self.word = "eval"
+        self.type = "pyeval"
+        self.word = "pyeval"
         
     def execute(self, stack, variables):
         if len(stack) >= 2:            
@@ -692,6 +692,24 @@ class Eval(Operator):
                 stack.append(dfv.data.Error("Types not supported"))
         else:
             stack.append(dfv.data.Error("Not enough parameters"))
+            
+            
+class Eval(Operator):
+    def __init__(self):
+        Operator.__init__(self)
+        self.type = "eval"
+        self.word = "eval"
+        
+    def execute(self, stack, variables):
+        if len(stack) >= 1:            
+            if stack[-1].type != "none":
+                n1 = stack.pop()
+                n1.execute(stack, variables, variables["curr_function"])
+            else:
+                stack.append(dfv.data.Error("Types not supported"))
+        else:
+            stack.append(dfv.data.Error("Not enough parameters"))
+            
         
 class StartList(Operator):
     def __init__(self):
@@ -783,11 +801,11 @@ class If(Operator):
         
     def execute(self, stack, variables):
         if len(stack) >= 2:
-            if stack[-1].type == "bool" and stack[-2].type == "list":
+            if stack[-2].type == "bool" and stack[-1].type == "list":
                 n2 = stack.pop()
                 n1 = stack.pop()
-                if n2.value == True:
-                    for cmd in n1.values:
+                if n1.value == True:
+                    for cmd in n2.values:
                         cmd.execute(stack, variables)
             else:
                 stack.append(dfv.data.Error("Types not supported"))
@@ -803,15 +821,15 @@ class IfElse(Operator):
         
     def execute(self, stack, variables):
         if len(stack) >= 3:
-            if stack[-1].type == "bool" and stack[-2].type == "list" and stack[-3].type == "list":
+            if stack[-3].type == "bool" and stack[-2].type == "list" and stack[-1].type == "list":
                 n3 = stack.pop()
                 n2 = stack.pop()
                 n1 = stack.pop()
-                if n3.value == True:
-                    for cmd in n1.values:
+                if n1.value == True:
+                    for cmd in n2.values:
                         cmd.execute(stack, variables)
                 else:
-                    for cmd in n2.values:
+                    for cmd in n3.values:
                         cmd.execute(stack, variables)
             else:
                 stack.append(dfv.data.Error("Types not supported"))

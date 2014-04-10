@@ -3,11 +3,25 @@
 *   Author: Daniel Fernández Villanueva
 #
 
+
 #   Type triangle #
 ["v1" "v2" "v3"][] "triangle" type
 
+
+#   Function area
+*   Returns the area of the triangle t #
 [   "t" def
     t:v1 t:v2 -
     t:v1 t:v3 -
     cross abs 0.5 *
-] "area" fun
+] "triangle:area" fun
+
+
+#   Function area
+*   Returns the unit vector normal to the surface
+*   that contains the triangle t #
+[   "t" def
+    t:v1 t:v2 -
+    t:v1 t:v3 -
+    cross unit
+] "triangle:normal" fun

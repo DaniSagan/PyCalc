@@ -38,8 +38,8 @@
 ] "vec3:cross" fun
 
 [   ["t1" "v2"] def
-    [t1 v2:x * t1 v2:y * t1 v2:z * vec3 ret] t1 who "number" = if
-    [t1 v2 dot ret] t1 who "object.vec3" = if   
+    t1 who "number" = [t1 v2:x * t1 v2:y * t1 v2:z * vec3 ret] if
+    t1 who "object.vec3" = [t1 v2 dot ret] if   
 ] "vec3:*" fun
 
 [   "v" def

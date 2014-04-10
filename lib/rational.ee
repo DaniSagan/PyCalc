@@ -4,12 +4,13 @@
 [   "q" def
     q:numerator "n" def
     q:denominator "d" def
+    n d * 0 <
     [   n abs neg "n" def d abs "d" def
     ][  n abs "n" def d abs "d" def
-    ] n d * 0 < ifelse
+    ] ifelse
     n abs d gcd "g" def
-    q n g // "numerator" set ..
-    q d g // "denominator" set ..
+    n g // "q:numerator" def
+    d g // "q:denominator" def
     q
 ] "rational:simplify" fun
 

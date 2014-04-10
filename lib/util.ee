@@ -26,11 +26,12 @@
 #   Function range  
 *   Creates a list of integers from 0 to .n #
 [   "n" def
+    n who "integer" =
     [   0 "k" def
         [k . ++ "k" def][k n <] while
         n npack
     ][  "Types not supported" error
-    ] n who "integer" = ifelse
+    ] ifelse
 ] "integer:range" fun
 
 
@@ -47,12 +48,12 @@
 #   Function is_prime  
 *   Returns true if the number .n is prime, and false otherwise #
 [   "n" def
-    [false ret] n 1 <= if
+    n 1 <= [false ret] if
     2 "k" def
     n real 0.5 pow _ "lim" def
-    [   [false ret] n k % 0 = if 
+    [   n k % 0 = [false ret] if 
         k 1 + "k" def
-    ][k lim <=]while
+    ][k lim <=] while
     true
 ] "integer:is_prime" fun
 
@@ -62,18 +63,52 @@
 [   "n" def
     2 "k" def
     [] "res" def
-    [   [   n k // "n" def 
+    [   n k % 0 =
+        [   n k // "n" def 
             res k pack cat "res" def
-        ][k ++ "k" def] 
-        n k % 0 = ifelse
+        ][  k ++ "k" def
+        ] ifelse
     ][n 1 !=] while
     res
 ] "integer:factor" fun
 
+
+#   Function gcd
+*   Returns the greatest common divisor of the numbers n1 and n2 #
 [   ["n1" "n2"] def
-    [n1 ret] n1 n2 = if
-    [1 ret] n1 1 = n2 1 = or if
-    [n1 n2 - n2 gcd][n2 n1 - n1 gcd] n1 n2 > ifelse
+    n1 n2 = [n1 ret] if
+    n1 1 = n2 1 = or [1 ret] if
+    n1 n2 > [n1 n2 - n2 gcd][n2 n1 - n1 gcd] ifelse
 ] "integer:gcd" fun
+
+
+#   Function zip
+*   Returns a zipped list of the two lists l1 and l2    #
+[   ["l1" "l2"] def
+    l1 abs l2 abs != [ret] if
+    l1 abs range
+    ["k" def] l1 pack cat [k get] cat l2 pack cat [k get 2 npack] cat map
+] "list:zip" fun
+
+
+#   Funtion contains
+*   Returns true if the list contains the value #
+[   ["value" "list"] def
+    false
+    list value pack [= [.. true ret] if] cat for
+] "list:contains" fun
+
+
+#   Function nzip
+*   Returns a zipped list of the list of lists on top of the stack    #
+[   "ll" def
+    ll abs "nlists" def
+    ll 0 get abs "size" def
+    ll [abs] size pack cat [=] cat map "list_sizes" def
+    false list_sizes contains [ret] if
+    0 "k" def    
+    [0 "j" def [ll j get k get j ++ "j" def][j nlists <] while nlists npack k ++ "k" def] [k size <] while
+    size npack
+] "list:nzip" fun
 
 #   End of file   #
