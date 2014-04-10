@@ -28,12 +28,13 @@ class Cmd(Data):
         self.value = value
     
     def execute(self, stack, variables, parent_function=None):
-        new_value = ""
+        
         logging.debug("*****************************************")
         logging.debug("stack: %s" % stack)
         logging.debug("cmd: %s" % self.value)
         #logging.debug("vars: %s" % variables)
         
+        new_value = ""
         if len(stack) >= 1:
             last_type = stack[-1].type
             if last_type.startswith("object."):
@@ -45,8 +46,20 @@ class Cmd(Data):
         if new_value in variables:
             self.value = new_value
         
+        # if not we try the local variables
+        # if we're not inside a function there are no local variables
+        if variables["curr_function"] != None and self.value in variables["curr_function"].locals:
+            if variables["curr_function"].locals[self.value].type == "function":
+                variables["curr_function"].locals[self.value].execute(stack, variables, parent_function=variables["curr_function"])    
+            elif variables["curr_function"].locals[self.value].type == "data_type":
+                variables["curr_function"].locals[self.value].execute(stack, variables, parent_function)
+            elif variables["curr_function"].locals[self.value].type.startswith("object"):
+                variables["curr_function"].locals[self.value].execute(stack, variables, parent_function)
+            else: 
+                variables["curr_function"].locals[self.value].execute(stack, variables)
+        
         # first we see if we can match the command to any global variable
-        if self.value in variables:
+        elif self.value in variables:
             if variables[self.value].type == "function":
                 fn = Function(variables[self.value].values, variables[self.value].name)
                 fn.execute(stack, variables, parent_function)
@@ -57,17 +70,23 @@ class Cmd(Data):
                 variables[self.value].execute(stack, variables, parent_function)
             else:
                 variables[self.value].execute(stack, variables)                
-        # if not we try the local variables
-        # if we're not inside a function there are no local variables
-        elif variables["curr_function"] != None and self.value in variables["curr_function"].locals:
-            if variables["curr_function"].locals[self.value].type == "function":
-                variables["curr_function"].locals[self.value].execute(stack, variables, parent_function=variables["curr_function"])    
-            elif variables["curr_function"].locals[self.value].type == "data_type":
-                variables["curr_function"].locals[self.value].execute(stack, variables, parent_function)
-            elif variables["curr_function"].locals[self.value].type.startswith("object"):
-                variables["curr_function"].locals[self.value].execute(stack, variables, parent_function)
-            else: 
-                variables["curr_function"].locals[self.value].execute(stack, variables)
+        
+        elif ":" in self.value:
+            
+            cmds = self.value.split(":", 1)
+            if variables["curr_function"] != None and cmds[0] in variables["curr_function"].locals:
+                curr_function = variables["curr_function"]
+                variables["curr_function"] = curr_function.locals[cmds[0]]
+                new_cmd = Cmd(cmds[1])
+                new_cmd.execute(stack, variables, parent_function)
+                variables["curr_function"] = curr_function
+            elif cmds[0] in variables:
+                curr_function = variables["curr_function"]
+                variables["curr_function"] = variables[cmds[0]]
+                new_cmd = Cmd(cmds[1])
+                new_cmd.execute(stack, variables, parent_function)
+                variables["curr_function"] = curr_function
+            
         else:
             stack.append(Error("Command \"%s\" not found" % self.value))
             

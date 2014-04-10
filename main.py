@@ -7,6 +7,8 @@ import dfv.operator
 import re
 import matplotlib.pyplot as plt
 import logging
+import os
+import sys
 
 def is_number(string):
     try:
@@ -103,6 +105,7 @@ PyCalc v0.1
         
     def run(self):
         print(self.TEXT)
+        
         #while self.cmd != "quit":
         self.execute_cmds(self.parse_cmd(COMMAND))
         while self.vars["running"]:
@@ -139,7 +142,8 @@ PyCalc v0.1
                 cmds.append(dfv.data.String(strs.pop(0)))
             elif cmd == "$imp":
                 try:
-                    with open(imports.pop(0), "r") as f:
+                    path = os.path.dirname(os.path.abspath(__file__)) + "/" + imports.pop(0)
+                    with open(path, "r") as f:
                         lines = f.read()
                     cmds.extend(self.parse_cmd(lines))
                 except:
@@ -164,7 +168,8 @@ PyCalc v0.1
         self.execute_cmds(self.parse_cmd(lines))
 
 def main():    
-    logging.basicConfig(filename='log/log.log', level=logging.DEBUG)
+    path = os.path.dirname(os.path.abspath(__file__))
+    logging.basicConfig(filename=path + '/log/log.log', level=logging.DEBUG)
     app = App()
     app.run()
     
