@@ -61,6 +61,7 @@ PyCalc v0.1
                      "def": dfv.operator.Def(),
                      "cls": dfv.operator.Cls(),
                      "eval": dfv.operator.Eval(),
+                     "pyeval": dfv.operator.PyEval(),
                      "fun": dfv.operator.Fun(),
                      "cat": dfv.operator.Cat(),
                      "pi": dfv.data.Number(math.pi),
@@ -89,6 +90,7 @@ PyCalc v0.1
                      "type": dfv.operator.Type(),
                      "edit": dfv.operator.Edit(),
                      "get": dfv.operator.Get(),
+                     "lget": dfv.operator.LGet(),
                      "swap": dfv.operator.Swap(),
                      "who": dfv.operator.Who(),
                      "int": dfv.operator.Int(),
@@ -121,8 +123,10 @@ PyCalc v0.1
             if self.vars["curr_list"] == None:
                 cmd.execute(self.stack, self.vars)                
             else:
-                if cmd.value != "]" and cmd.value != "[": self.vars["curr_list"].append(cmd)
-                else: cmd.execute(self.stack, self.vars)                
+                if cmd.value != "]" and cmd.value != "[": 
+                    self.vars["curr_list"].append(cmd)
+                else: 
+                    cmd.execute(self.stack, self.vars)                
                 
     def parse_cmd(self, cmd_string):
         cmds = []

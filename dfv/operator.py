@@ -679,15 +679,14 @@ class PyEval(Operator):
         
     def execute(self, stack, variables):
         if len(stack) >= 2:            
-            if stack[-1].type == "string" and stack[-2].type == "list":
+            if stack[-1].type == "string" and stack[-2].type == "string":
                 n2 = stack.pop()
                 n1 = stack.pop()
-                str_cmd = n2.value
-                str_cmd += "("                  
-                str_cmd += ", ".join([str(n) for n in n1.values])
-                str_cmd += ")"
-                res = eval(str_cmd)
-                stack.append_from_python_obj(res)
+                if n1.value == "exec":
+                    exec (n2.value, globals())
+                elif n1.value == "eval":
+                    res = eval(n2.value)
+                    stack.append_from_python_obj(res)
             else:
                 stack.append(dfv.data.Error("Types not supported"))
         else:
@@ -782,11 +781,12 @@ class Cat(Operator):
                 stack.append(dfv.data.String(n1.value + n2.value))
             elif stack[-1].type == "list" and stack[-2].type == "list":
                 n2 = stack.pop()
-                n1 = stack.pop()
+                stack[-1].values.extend(n2.values)
+                """n1 = stack.pop()
                 #n1.values.extend(n2.values)
                 new_list = copy.deepcopy(n1.values)
                 new_list.extend(copy.deepcopy(n2.values))
-                stack.append(dfv.data.List(parent=variables["curr_list"], values=new_list))
+                stack.append(dfv.data.List(parent=variables["curr_list"], values=new_list))"""
             else:
                 stack.append(dfv.data.Error("Types not supported"))
         else:
@@ -1249,7 +1249,8 @@ class Edit(Operator):
         if len(stack) >= 1:            
             if stack[-1].type == "string":
                 n1 = stack.pop()
-                os.system("gedit %s &" % n1.value)
+                path = os.path.dirname(os.path.abspath(__file__)) + "/../" + n1.value
+                os.system("gedit %s &" % path)
             else:
                 stack.append(dfv.data.Error("Types not supported"))
         else:
@@ -1276,6 +1277,29 @@ class Get(Operator):
                 n1 = stack.pop()
                 if n2.value < len(n1.values):
                     stack.append(n1.values[int(n2.value)])
+                else:
+                    stack.append(dfv.data.Error("Item %s not found in list" % n2.value))
+            else:
+                stack.append(dfv.data.Error("Types not supported"))
+        else:
+            stack.append(dfv.data.Error("Not enough parameters"))
+            
+            
+class LGet(Operator):
+    def __init__(self):
+        Operator.__init__(self)
+        self.type = "lget"
+        self.word = "lget"
+        
+    def execute(self, stack, variables):
+        if len(stack) >= 2:            
+            if stack[-2].type == "list" and stack[-1].type == "integer":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                if n1.values[0].value in variables:
+                    stack.append(variables[n1.values[0].value].values[n2.value])
+                elif variables["curr_function"] != None and n1.values[0].value in variables["curr_function"].locals:
+                    stack.append(variables["curr_function"].locals[n1.values[0].value].values[n2.value])
                 else:
                     stack.append(dfv.data.Error("Item %s not found in list" % n2.value))
             else:
@@ -1386,7 +1410,7 @@ class Pack(Operator):
     def execute(self, stack, variables):
         if len(stack) >= 1:
             n1 = stack.pop()
-            new_list = dfv.data.List(parent=variables["curr_list"], values=[n1])
+            new_list = dfv.data.List(parent=variables["curr_list"], values=[copy.deepcopy(n1)])
             stack.append(new_list)
         else:
             stack.append(dfv.data.Error("Not enough parameters"))
@@ -1405,7 +1429,7 @@ class Npack(Operator):
                 if len(stack) >= n1.value:
                     new_list = dfv.data.List(parent=variables["curr_list"])
                     for k in range(n1.value):
-                        new_list.append(stack.pop())
+                        new_list.append(copy.deepcopy(stack.pop()))
                     new_list.values.reverse()
                     stack.append(new_list)
                 else:

@@ -26,12 +26,11 @@
 #   Function range  
 *   Creates a list of integers from 0 to .n #
 [   "n" def
-    n who "integer" =
-    [   0 "k" def
-        [k . ++ "k" def][k n <] while
-        n npack
-    ][  "Types not supported" error
-    ] ifelse
+    0 "k" def
+    []
+    #[k . ++ "k" def][k n <] while#
+    [k pack cat k ++ "k" def][k n <] while
+    #n npack#
 ] "integer:range" fun
 
 
@@ -86,9 +85,31 @@
 *   Returns a zipped list of the two lists l1 and l2    #
 [   ["l1" "l2"] def
     l1 abs l2 abs != [ret] if
-    l1 abs range
-    ["k" def] l1 pack cat [k get] cat l2 pack cat [k get 2 npack] cat map
+    l1 abs "size" def
+    0 "k" def
+    []
+    [[l1] k lget [l2] k lget 2 npack pack cat k ++ "k" def] [k size <] while
 ] "list:zip" fun
+
+
+#   Function nzip
+*   Returns a zipped list of the list of lists on top of the stack    #
+[   "ll" def
+    ll abs "nlists" def
+    [ll] 0 lget abs "size" def
+    0 "k" def
+    []
+    [   0 "j" def 
+        [] 
+        [   [ll] j lget 
+            k get pack cat
+            j ++ "j" def
+        ] [j nlists <] while 
+        pack
+        cat
+        k ++ "k" def        
+    ][k size <] while
+] "list:nzip" fun
 
 
 #   Funtion contains
@@ -99,16 +120,19 @@
 ] "list:contains" fun
 
 
-#   Function nzip
-*   Returns a zipped list of the list of lists on top of the stack    #
-[   "ll" def
-    ll abs "nlists" def
-    ll 0 get abs "size" def
-    ll [abs] size pack cat [=] cat map "list_sizes" def
-    false list_sizes contains [ret] if
-    0 "k" def    
-    [0 "j" def [ll j get k get j ++ "j" def][j nlists <] while nlists npack k ++ "k" def] [k size <] while
-    size npack
-] "list:nzip" fun
+#   Function list:sum
+*   Returns the sum of all the elements in the list #
+[   "l" def
+    0
+    l [+] for
+] "list:sum" fun
+
+
+#   Function list:prod
+*   Returns the product of all the elements in the list #
+[   "l" def
+    0
+    l [*] for
+] "list:prod" fun
 
 #   End of file   #

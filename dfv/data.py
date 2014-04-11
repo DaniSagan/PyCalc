@@ -3,6 +3,13 @@
 
 import copy
 import logging
+
+def is_int(string):
+    try:
+        int(string)
+        return True
+    except:
+        return False
         
 class Data:
     def __init__(self):
@@ -15,9 +22,9 @@ class Data:
         return self.value
         
     def execute(self, stack, variables, parent_function=None):
-        logging.debug("*****************************************")
-        logging.debug("stack: %s" % stack)
-        logging.debug("cmd: %s" % self.value)
+        #logging.debug("*****************************************")
+        #logging.debug("stack: %s" % stack)
+        #logging.debug("cmd: %s" % self.value)
         stack.append(self)
 
 
@@ -29,9 +36,9 @@ class Cmd(Data):
     
     def execute(self, stack, variables, parent_function=None):
         
-        logging.debug("*****************************************")
-        logging.debug("stack: %s" % stack)
-        logging.debug("cmd: %s" % self.value)
+        #logging.debug("*****************************************")
+        #logging.debug("stack: %s" % stack)
+        #logging.debug("cmd: %s" % self.value)
         #logging.debug("vars: %s" % variables)
         
         new_value = ""
@@ -46,7 +53,7 @@ class Cmd(Data):
         if new_value in variables:
             self.value = new_value
         
-        # if not we try the local variables
+        # First try a match with the local variables
         # if we're not inside a function there are no local variables
         if variables["curr_function"] != None and self.value in variables["curr_function"].locals:
             if variables["curr_function"].locals[self.value].type == "function":
@@ -58,7 +65,7 @@ class Cmd(Data):
             else: 
                 variables["curr_function"].locals[self.value].execute(stack, variables)
         
-        # first we see if we can match the command to any global variable
+        # If not we see if we can match the command to any global variable
         elif self.value in variables:
             if variables[self.value].type == "function":
                 fn = Function(variables[self.value].values, variables[self.value].name)
@@ -75,17 +82,23 @@ class Cmd(Data):
             
             cmds = self.value.split(":", 1)
             if variables["curr_function"] != None and cmds[0] in variables["curr_function"].locals:
-                curr_function = variables["curr_function"]
-                variables["curr_function"] = curr_function.locals[cmds[0]]
-                new_cmd = Cmd(cmds[1])
-                new_cmd.execute(stack, variables, parent_function)
-                variables["curr_function"] = curr_function
+                if variables["curr_function"].locals[cmds[0]].type == "list" and is_int(cmds[1]):
+                    stack.append(variables["curr_function"].locals[cmds[0]].values[int(cmds[1])])
+                else:
+                    curr_function = variables["curr_function"]
+                    variables["curr_function"] = curr_function.locals[cmds[0]]
+                    new_cmd = Cmd(cmds[1])
+                    new_cmd.execute(stack, variables, parent_function)
+                    variables["curr_function"] = curr_function
             elif cmds[0] in variables:
-                curr_function = variables["curr_function"]
-                variables["curr_function"] = variables[cmds[0]]
-                new_cmd = Cmd(cmds[1])
-                new_cmd.execute(stack, variables, parent_function)
-                variables["curr_function"] = curr_function
+                if variables[cmds[0]].type == "list" and is_int(cmds[1]):
+                    stack.append(variables[cmds[0]].values[int(cmds[1])])
+                else:
+                    curr_function = variables["curr_function"]
+                    variables["curr_function"] = variables[cmds[0]]
+                    new_cmd = Cmd(cmds[1])
+                    new_cmd.execute(stack, variables, parent_function)
+                    variables["curr_function"] = curr_function
             
         else:
             stack.append(Error("Command \"%s\" not found" % self.value))
@@ -166,8 +179,11 @@ class List(Data):
         Data.__init__(self)
         self.type = "list"
         self.parent = parent
-        self.values = []
-        if values != None: self.values.extend(copy.deepcopy(values))
+        self.values = None
+        #self.values = []
+        # if values != None: self.values.extend(copy.deepcopy(values))
+        if values != None: self.values = copy.deepcopy(values)
+        else: self.values = []
         
     def append(self, value):
         self.values.append(value)
@@ -199,6 +215,9 @@ class List(Data):
             self.values.append(String(pyton_obj))
         elif type(pyton_obj) is bool:
             self.values.append(Bool(pyton_obj))
+            
+    def execute(self, stack, variables, parent_function=None):
+        stack.append(copy.deepcopy(self))
 
         
 class Function(Data):
@@ -233,6 +252,7 @@ class Type(Data):
         self.name = name
         self.params = params
         self.init_function = init_function
+        self.locals = {}
     
     def execute(self, stack, variables, parent_function):
         #self.locals = {}
