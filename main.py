@@ -20,14 +20,6 @@ def is_number(string):
     except:
         return False 
 
-
-def complete(text,state):
-    volcab = ['dog','cat','rabbit','bird','slug','snail']
-    results = [x for x in volcab if x.startswith(text)] + [None]
-    return results[state]
-
-#readline.set_completer(complete)
-
 COMMAND = """
 {startup.ee}
 """
@@ -72,6 +64,7 @@ PyCalc v0.1
                      "cls": dfv.operator.Cls(),
                      "eval": dfv.operator.Eval(),
                      "pyeval": dfv.operator.PyEval(),
+                     "pyexec": dfv.operator.PyExec(),
                      "fun": dfv.operator.Fun(),
                      "cat": dfv.operator.Cat(),
                      "pi": dfv.data.Number(math.pi),
@@ -110,7 +103,8 @@ PyCalc v0.1
                      "npack": dfv.operator.Npack(),
                      "unpack": dfv.operator.Unpack(),
                      "real": dfv.operator.ToReal(),
-                     "set": dfv.operator.Set()}
+                     "set": dfv.operator.Set(),
+                     "tostring": dfv.operator.ToString()}
                      
         self.string_mode = False
         self.stack = dfv.data.List(parent=None)
@@ -118,11 +112,7 @@ PyCalc v0.1
         
     def run(self):
         print(self.TEXT)
-        
-        #while self.cmd != "quit":
         self.execute_cmds(self.parse_cmd(COMMAND))
-        
-        #readline.parse_and_bind("tab: complete")
         readline.set_completer(self.complete)
         
         while self.vars["running"]:
@@ -130,6 +120,7 @@ PyCalc v0.1
             self.print_list()
             self.cmd = raw_input(">> ")
             self.execute_cmds(self.parse_cmd(self.cmd))
+            print ""
         return 0
                 
     def execute_cmds(self, cmds):
@@ -137,7 +128,7 @@ PyCalc v0.1
             if self.vars["curr_list"] == None:
                 cmd.execute(self.stack, self.vars)                
             else:
-                if cmd.value != "]" and cmd.value != "[": 
+                if cmd.value != "]" and cmd.value != "[" or cmd.type == "string": 
                     self.vars["curr_list"].append(cmd)
                 else: 
                     cmd.execute(self.stack, self.vars)                
@@ -146,12 +137,13 @@ PyCalc v0.1
         cmds = []
         
         # check for comments and delete them
-        #cmd_string = re.sub('#([^"]*)#', "", cmd_string)
         cmd_string = re.sub('#([^#]*)#', "", cmd_string)
         
         # check for strings
         strs = re.findall('"([^"]*)"', cmd_string)
         cmd_string = re.sub('"([^"]*)"', " $str ", cmd_string)
+        
+        
         
         # check for imports
         imports = re.findall('{([^}]+)}', cmd_string)
@@ -160,6 +152,8 @@ PyCalc v0.1
         # lists
         cmd_string = cmd_string.replace("[", " [ ")
         cmd_string = cmd_string.replace("]", " ] ")
+        
+        #print cmd_string
         
         for cmd in str.split(cmd_string):
             if is_number(cmd):
@@ -174,14 +168,15 @@ PyCalc v0.1
             elif cmd == "$str":
                 cmds.append(dfv.data.String(strs.pop(0)))
             elif cmd == "$imp":
-                try:
-                    path = os.path.dirname(os.path.abspath(__file__)) + "/" + imports.pop(0)
+                path = os.path.dirname(os.path.abspath(__file__)) + "/" + imports.pop(0)
+                try:                    
                     with open(path, "r") as f:
                         lines = f.read()
                     cmds.extend(self.parse_cmd(lines))
+                    #cmds[0:0] = self.parse_cmd(lines)
                 except:
                     pass
-                    #cmds.append(dfv.data.String(strs.pop(0)))
+                    cmds.append(dfv.data.Error("Could not load module at location %s" % path))
             else:
                 cmds.append(dfv.data.Cmd(cmd))
         return cmds

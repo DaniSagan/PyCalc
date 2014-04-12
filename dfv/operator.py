@@ -6,6 +6,7 @@ import dfv.data
 from main import App
 import os
 import copy
+import sys
 
 class Operator:
     def __init__(self):
@@ -60,9 +61,17 @@ class Sum(Operator):
                 res.extend(n2.values)
                 stack.append(dfv.data.List(parent=n1.parent, values=res))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
       
 
@@ -96,9 +105,17 @@ class Diff(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Complex(n1.real_value - n2.real_value, n1.imag_value - n2.imag_value))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters")) 
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg)) 
             
 
 class Mult(Operator):
@@ -139,9 +156,17 @@ class Mult(Operator):
                     res.extend(n1.values)
                 stack.append(dfv.data.List(parent=n1.parent, values=res))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters")) 
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg)) 
             
             
 class Pow(Operator):
@@ -169,9 +194,17 @@ class Pow(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Integer(float(n1.value) ** n2.value))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters")) 
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg)) 
             
   
 class Div(Operator):
@@ -223,9 +256,17 @@ class Div(Operator):
                     stack.append(dfv.data.Complex((a*c+b*d)/(c**2+d**2), 
                                                   (b*c-a*d)/(c**2+d**2)))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
 
 
 class IntDiv(Operator):
@@ -244,9 +285,17 @@ class IntDiv(Operator):
                     n1 = stack.pop()
                     stack.append(dfv.data.Integer(int(n1.value / n2.value)))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
             
 class ToComplex(Operator):
@@ -262,9 +311,17 @@ class ToComplex(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Complex(n1.value, n2.value))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
 
             
 class Exp(Operator):
@@ -283,9 +340,17 @@ class Exp(Operator):
                 stack.append(dfv.data.Complex(math.exp(n1.real_value)*math.cos(n1.imag_value),
                                               math.exp(n1.real_value)*math.sin(n1.imag_value)))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
 
 
 class Abs(Operator):
@@ -309,9 +374,17 @@ class Abs(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Integer(len(n1.values)))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
             
 class Arg(Operator):
@@ -329,9 +402,17 @@ class Arg(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(math.atan2(n1.imag_value, n1.real_value)))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
 
 
 class Sin(Operator):
@@ -346,9 +427,17 @@ class Sin(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(math.sin(n1.value)))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
 
 
 class Asin(Operator):
@@ -363,9 +452,17 @@ class Asin(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(math.asin(n1.value)))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
 
 
 class Cos(Operator):
@@ -380,9 +477,17 @@ class Cos(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(math.cos(n1.value)))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
 
 
 class Acos(Operator):
@@ -397,9 +502,17 @@ class Acos(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(math.acos(n1.value)))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
 
 
 class Tan(Operator):
@@ -414,9 +527,17 @@ class Tan(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(math.tan(n1.value)))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
             
 class Atan(Operator):
@@ -431,9 +552,17 @@ class Atan(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(math.atan(n1.value)))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
             
 class Atan2(Operator):
@@ -449,9 +578,17 @@ class Atan2(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(math.atan2(n1.value, n2.value)))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
 
 
 class Ln(Operator):
@@ -471,9 +608,17 @@ class Ln(Operator):
                 a = math.atan2(n1.imag_value, n1.real_value)
                 stack.append(dfv.data.Complex(math.log(r), a))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
 
             
 class Neg(Operator):
@@ -494,9 +639,17 @@ class Neg(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Bool(not n1.value))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))  
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))  
             
 class Inv(Operator):
     def __init__(self):
@@ -513,9 +666,17 @@ class Inv(Operator):
                     n1 = stack.pop()
                     stack.append(dfv.data.Number(1.0/n1.value))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))     
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))     
 
 
 class Drop(Operator):
@@ -528,7 +689,11 @@ class Drop(Operator):
         if len(stack) >= 1:
             stack.pop()
         else:
-            stack.append(dfv.data.Error("Not enough parameters")) 
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg)) 
             
             
 class Dup(Operator):
@@ -541,7 +706,11 @@ class Dup(Operator):
         if len(stack) >= 1:
             stack.append(copy.deepcopy(stack[-1]))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
 
 class Def(Operator):
@@ -593,73 +762,17 @@ class Def(Operator):
                 else:
                     variables["curr_function"].locals[n2.value] = n1            
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
-
-
-"""            
-class Def(Operator):
-    def __init__(self):
-        Operator.__init__(self)
-        self.type = "def"
-        self.word = "def"
-        
-    def execute(self, stack, variables):
-        if len(stack) >= 2:            
-            if stack[-1].type == "list":
-                n1 = stack.pop()
-                for n in reversed(n1):
-                    stack.append(n)
-                    self.execute(stack, variables)
-            elif stack[-1].type == "string" and stack[-2].type == "string":
-                n2 = stack.pop()
-                n1 = stack.pop()
-                if n2.value.startswith(".") and variables["curr_function"] != None: 
-                    variables["curr_function"].locals[n2.value] = n1
-                else: 
-                    variables[n2.value] = n1
-            elif stack[-1].type == "string" and stack[-2].type in ["number", "integer"]:
-                #if stack[-1].value not in variables:
-                n2 = stack.pop()
-                n1 = stack.pop()
-                if n2.value.startswith(".") and variables["curr_function"] != None: 
-                    variables["curr_function"].locals[n2.value] = n1
-                else: 
-                    variables[n2.value] = n1
-            elif stack[-1].type == "string" and stack[-2].type == "bool":
-                #if stack[-1].value not in variables:
-                n2 = stack.pop()
-                n1 = stack.pop()
-                if n2.value.startswith(".") and variables["curr_function"] != None: 
-                    variables["curr_function"].locals[n2.value] = n1
-                else: 
-                    variables[n2.value] = n1
-            elif stack[-1].type == "string" and stack[-2].type == "complex":
-                n2 = stack.pop()
-                n1 = stack.pop()
-                if n2.value.startswith(".") and variables["curr_function"] != None: 
-                    variables["curr_function"].locals[n2.value] = n1
-                else: 
-                    variables[n2.value] = n1
-            elif stack[-1].type == "string" and stack[-2].type == "list":
-                n2 = stack.pop()
-                n1 = stack.pop()
-                if n2.value.startswith(".") and variables["curr_function"] != None: 
-                    variables["curr_function"].locals[n2.value] = copy.deepcopy(n1)
-                else: 
-                    variables[n2.value] = n1
-            elif stack[-1].type == "string":
-                n2 = stack.pop()
-                n1 = stack.pop()
-                if n2.value.startswith(".") and variables["curr_function"] != None: 
-                    variables["curr_function"].locals[n2.value] = n1
-                else: 
-                    variables[n2.value] = n1
-            else:
-                stack.append(dfv.data.Error("Types not supported"))
-        else:
-            stack.append(dfv.data.Error("Not enough parameters"))"""
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
             
 class Cls(Operator):
@@ -674,23 +787,52 @@ class Cls(Operator):
 class PyEval(Operator):
     def __init__(self):
         Operator.__init__(self)
-        self.type = "pyeval"
-        self.word = "pyeval"
+        self.type = "pyexec"
+        self.word = "pyexec"
+    
+    def execute(self, stack, variables):
+        if len(stack) >= 1:            
+            if stack[-1].type == "string":
+                n1 = stack.pop()
+                res = eval(n1.value)
+                stack.append_from_python_obj(res)
+            else:
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
+        else:
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
+            
+            
+class PyExec(Operator):
+    def __init__(self):
+        Operator.__init__(self)
+        self.type = "pyexec"
+        self.word = "pyexec"
         
     def execute(self, stack, variables):
-        if len(stack) >= 2:            
-            if stack[-1].type == "string" and stack[-2].type == "string":
-                n2 = stack.pop()
+        if len(stack) >= 1:            
+            if stack[-1].type == "string":
                 n1 = stack.pop()
-                if n1.value == "exec":
-                    exec (n2.value, globals())
-                elif n1.value == "eval":
-                    res = eval(n2.value)
-                    stack.append_from_python_obj(res)
+                exec (n1.value, globals())
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
             
 class Eval(Operator):
@@ -705,9 +847,17 @@ class Eval(Operator):
                 n1 = stack.pop()
                 n1.execute(stack, variables, variables["curr_function"])
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
         
 class StartList(Operator):
@@ -762,9 +912,17 @@ class Fun(Operator):
                 n1 = stack.pop()
                 variables[n2.value] = dfv.data.Function(n1.values, name=n2.value)
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))   
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))   
             
             
 class Cat(Operator):
@@ -788,9 +946,17 @@ class Cat(Operator):
                 new_list.extend(copy.deepcopy(n2.values))
                 stack.append(dfv.data.List(parent=variables["curr_list"], values=new_list))"""
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
      
 
 class If(Operator):
@@ -808,9 +974,17 @@ class If(Operator):
                     for cmd in n2.values:
                         cmd.execute(stack, variables)
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))  
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))  
             
             
 class IfElse(Operator):
@@ -832,9 +1006,17 @@ class IfElse(Operator):
                     for cmd in n3.values:
                         cmd.execute(stack, variables)
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters")) 
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg)) 
             
             
 class Not(Operator):
@@ -849,9 +1031,17 @@ class Not(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Bool(not n1.value))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))  
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))  
             
             
 class While(Operator):
@@ -879,9 +1069,17 @@ class While(Operator):
                     else:
                         loop = False
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
             
 class Eq(Operator):
@@ -913,9 +1111,17 @@ class Eq(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Bool(n1.value == n2.value))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
             
 class Neq(Operator):
@@ -947,9 +1153,17 @@ class Neq(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Bool(n1.value == n2.value))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))     
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))     
             
 
 class LessThan(Operator):
@@ -973,9 +1187,17 @@ class LessThan(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Bool(n1.value < n2.value))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
 
             
 class LessEqThan(Operator):
@@ -999,9 +1221,17 @@ class LessEqThan(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Bool(n1.value <= n2.value))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
 
 class GreaterThan(Operator):
@@ -1025,9 +1255,17 @@ class GreaterThan(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Bool(n1.value > n2.value))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
 class GreaterEqThan(Operator):
     def __init__(self):
@@ -1050,9 +1288,17 @@ class GreaterEqThan(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Bool(n1.value >= n2.value))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
 
             
 class Quit(Operator):
@@ -1080,9 +1326,17 @@ class Inc(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Integer(n1.value + 1))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
             
 class Dec(Operator):
@@ -1100,9 +1354,17 @@ class Dec(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Integer(n1.value - 1))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
             
 class Mod(Operator):
@@ -1122,9 +1384,17 @@ class Mod(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Integer((n1.value) % (n2.value)))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
 
 class And(Operator):
@@ -1140,9 +1410,17 @@ class And(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Bool(n1.value and n2.value))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
             
 class Or(Operator):
@@ -1158,9 +1436,17 @@ class Or(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Bool(n1.value or n2.value))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
             
 class Ret(Operator):
@@ -1181,9 +1467,13 @@ class Print(Operator):
         
     def execute(self, stack, variables):
         if len(stack) >= 1:            
-            print stack.pop()
+            sys.stdout.write(str(stack.pop()))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
             
 class Vars(Operator):
@@ -1213,9 +1503,17 @@ class Import(Operator):
                 n1 = stack.pop()
                 #app.import_file()
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
 
 class Type(Operator):
@@ -1234,9 +1532,17 @@ class Type(Operator):
                                                     params=n1.values,
                                                     init_function=n2.values)
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
             
 class Edit(Operator):
@@ -1252,9 +1558,17 @@ class Edit(Operator):
                 path = os.path.dirname(os.path.abspath(__file__)) + "/../" + n1.value
                 os.system("gedit %s &" % path)
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
             
 class Get(Operator):
@@ -1280,9 +1594,17 @@ class Get(Operator):
                 else:
                     stack.append(dfv.data.Error("Item %s not found in list" % n2.value))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
             
 class LGet(Operator):
@@ -1303,9 +1625,17 @@ class LGet(Operator):
                 else:
                     stack.append(dfv.data.Error("Item %s not found in list" % n2.value))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
             
 class Set(Operator):
@@ -1332,9 +1662,17 @@ class Set(Operator):
                 else:
                     stack.append(dfv.data.Error("Item %s not found in list" % n2.value))
             else:
-                stack.append(dfv.data.Error("Types not supported"))
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
             
 class Swap(Operator):
@@ -1350,7 +1688,11 @@ class Swap(Operator):
             stack.append(n2)
             stack.append(n1)            
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
             
 class Who(Operator):
@@ -1364,7 +1706,11 @@ class Who(Operator):
             n1 = stack.pop()
             stack.append(dfv.data.String(n1.type))            
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
             
 class Int(Operator):
@@ -1379,9 +1725,17 @@ class Int(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Integer(int(n1.value))) 
             else:
-                stack.append(dfv.data.Error("Types not supported"))           
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))           
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
 
 class Error(Operator):
@@ -1396,9 +1750,17 @@ class Error(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Error(n1.value)) 
             else:
-                stack.append(dfv.data.Error("Types not supported"))           
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))           
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
 
 
 class Pack(Operator):
@@ -1413,7 +1775,11 @@ class Pack(Operator):
             new_list = dfv.data.List(parent=variables["curr_list"], values=[copy.deepcopy(n1)])
             stack.append(new_list)
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
 
 
 class Npack(Operator):
@@ -1433,11 +1799,23 @@ class Npack(Operator):
                     new_list.values.reverse()
                     stack.append(new_list)
                 else:
-                    stack.append(dfv.data.Error("Not enough parameters")) 
+                    error_msg = ""
+                    if variables["curr_function"] != None:
+                        error_msg += "Function %s, " % variables["curr_function"].name
+                    error_msg += "Command %s: Not enough parameters" % self.word
+                    stack.append(dfv.data.Error(error_msg)) 
             else:
-                stack.append(dfv.data.Error("Types not supported"))           
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))           
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
             
 class Unpack(Operator):
@@ -1454,9 +1832,17 @@ class Unpack(Operator):
                     stack.append(n1.values[k]) 
                 stack.append(dfv.data.Integer(len(n1.values)))
             else:
-                stack.append(dfv.data.Error("Types not supported"))           
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))           
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
             
 class ToReal(Operator):
@@ -1471,8 +1857,41 @@ class ToReal(Operator):
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(float(n1.value)))
             else:
-                stack.append(dfv.data.Error("Types not supported"))           
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))           
         else:
-            stack.append(dfv.data.Error("Not enough parameters"))
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
+            
+            
+class ToString(Operator):
+    def __init__(self):
+        Operator.__init__(self)
+        self.type = "tostring"
+        self.word = "tostring"
+        
+    def execute(self, stack, variables):
+        if len(stack) >= 1:
+            if stack[-1].type in ["integer", "number", "list", "bool"]:
+                n1 = stack.pop()
+                stack.append(dfv.data.String(str(n1.value)))
+            else:
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))           
+        else:
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
                 

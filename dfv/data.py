@@ -101,9 +101,11 @@ class Cmd(Data):
                     variables["curr_function"] = curr_function
             
         else:
-            stack.append(Error("Command \"%s\" not found" % self.value))
-            
-        
+            if len(stack) >= 1:
+                var_type = stack[-1].type
+                stack.append(Error("Command \"%s\" not found for objects of type %s" % (self.value, var_type)))
+            else:
+                stack.append(Error("Command \"%s\" not found" % (self.value)))  
         
     def __str__(self):
         return "%s" % (self.value)
@@ -116,7 +118,7 @@ class String(Data):
         self.value = value
         
     def __str__(self):
-        return "\"%s\"" % self.value
+        return "%s" % self.value
                 
         
 class Number(Data):
@@ -156,7 +158,7 @@ class Error(Data):
         self.value = value
         
     def __str__(self):
-        return "Error: " + self.value
+        return "[Error] " + self.value
 
         
 class Complex(Data):

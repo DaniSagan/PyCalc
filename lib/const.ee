@@ -1,0 +1,6 @@
+[][] "const" type
+
+299792458.0 "const:c" def
+6.67384e-11 "const:G" def
+6.62606957e-34 "const:h" def
+1.054571726e-34 "const:hbar" def

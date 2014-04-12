@@ -131,8 +131,24 @@
 #   Function list:prod
 *   Returns the product of all the elements in the list #
 [   "l" def
-    0
+    1
     l [*] for
 ] "list:prod" fun
+
+
+#   Function list:cartesian_prod
+*   Returns the cartesian product of two lists #
+[   ["l1" "l2"] def
+    l1 abs "size1" def
+    l2 abs "size2" def
+    0 "x" def
+    [   0 "y" def
+        [   [l1] x lget [l2] y lget 2 npack
+            y ++ "y" def
+        ][y size2 <] while
+        x ++ "x" def
+    ][x size1 <] while
+    size1 size2 * npack
+] "list:cartesian_prod" fun
 
 #   End of file   #

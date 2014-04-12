@@ -58,3 +58,10 @@
 [   ["q1" "q2"] def
     q1 q2 inv *
 ] "rational:/" fun
+
+
+[   "r" def
+    r:numerator print
+    "/" print
+    r:denominator print
+] "rational:print" fun

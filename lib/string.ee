@@ -1,0 +1,14 @@
+#
+*   string.ee
+*   Author: Daniel Fernández Villanueva #
+
+[   ["lstr" "tok"] def
+    lstr who "list" = not [ret] if
+    lstr abs "size" def    
+    1 "k" def
+    lstr:0
+    [tok + [lstr] k lget + k ++ "k" def] [k size <] while
+] "string:join" fun
+
+
+

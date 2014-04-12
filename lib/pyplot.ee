@@ -1,0 +1,35 @@
+#
+*   pyplot.ee
+*   Author: Daniel Fernández Villanueva 
+#
+
+{lib/string.ee}
+
+[] [init] "graph" type
+
+[   "gr" def   
+    "import matplotlib.pyplot as plt" pyexec
+    "plt.plot(); plt.show(block=False)" pyexec
+    gr
+] "graph:init" fun
+
+
+[   ["xx" "yy" "gr"] def
+    xx [tostring] map "xx_str" def
+    yy [tostring] map "yy_str" def
+    "[" xx_str ", " join + "]" + "xx_list" def
+    "[" yy_str ", " join + "]" + "yy_list" def
+    "plt.plot(" xx_list + ", " + yy_list + ")" + pyexec
+    "plt.show(block=False)" pyexec 
+    gr
+] "graph:plot" fun
+
+
+[   ["x" "gr"] def
+    x 
+    ["plt.grid(True)" pyexec] 
+    ["plt.grid(False)" pyexec] 
+    ifelse
+    "plt.show(block=False)" pyexec
+    gr
+] "graph:show_grid" fun
