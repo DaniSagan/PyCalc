@@ -10,6 +10,8 @@ import logging
 import os
 import sys
 import readline
+readline.parse_and_bind("tab: complete")
+
 
 def is_number(string):
     try:
@@ -17,6 +19,14 @@ def is_number(string):
         return True
     except:
         return False 
+
+
+def complete(text,state):
+    volcab = ['dog','cat','rabbit','bird','slug','snail']
+    results = [x for x in volcab if x.startswith(text)] + [None]
+    return results[state]
+
+#readline.set_completer(complete)
 
 COMMAND = """
 {startup.ee}
@@ -111,6 +121,10 @@ PyCalc v0.1
         
         #while self.cmd != "quit":
         self.execute_cmds(self.parse_cmd(COMMAND))
+        
+        #readline.parse_and_bind("tab: complete")
+        readline.set_completer(self.complete)
+        
         while self.vars["running"]:
             #self.print_stack()
             self.print_list()
@@ -185,6 +199,11 @@ PyCalc v0.1
         with open(filename, "r") as f:
             lines = f.read()
         self.execute_cmds(self.parse_cmd(lines))
+        
+    def complete(self, text, state):
+        v = [key for key in self.vars]
+        results = [x + " " for x in v if x.startswith(text)]
+        return results[state]
 
 def main():    
     path = os.path.dirname(os.path.abspath(__file__))
@@ -193,6 +212,7 @@ def main():
     if not os.path.exists(path + '/script'):
         os.makedirs(path + '/script')
     logging.basicConfig(filename=path + '/log/log.log', level=logging.DEBUG)
+    
     app = App()
     app.run()
     
