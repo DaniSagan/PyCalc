@@ -332,7 +332,7 @@ class Exp(Operator):
         
     def execute(self, stack, variables):
         if len(stack) >= 1:            
-            if stack[-1].type == "number":
+            if stack[-1].type in ["number", "integer"]:
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(math.exp(n1.value)))
             elif stack[-1].type == "complex":
@@ -395,7 +395,7 @@ class Arg(Operator):
         
     def execute(self, stack, variables):
         if len(stack) >= 1:            
-            if stack[-1].type == "number":
+            if stack[-1].type in ["number", "integer"]:
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(0))
             if stack[-1].type == "complex":
@@ -423,7 +423,7 @@ class Sin(Operator):
         
     def execute(self, stack, variables):
         if len(stack) >= 1:            
-            if stack[-1].type == "number":
+            if stack[-1].type in ["number", "integer"]:
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(math.sin(n1.value)))
             else:
@@ -448,7 +448,7 @@ class Asin(Operator):
         
     def execute(self, stack, variables):
         if len(stack) >= 1:            
-            if stack[-1].type == "number":
+            if stack[-1].type in ["number", "integer"]:
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(math.asin(n1.value)))
             else:
@@ -473,7 +473,7 @@ class Cos(Operator):
         
     def execute(self, stack, variables):
         if len(stack) >= 1:            
-            if stack[-1].type == "number":
+            if stack[-1].type in ["number", "integer"]:
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(math.cos(n1.value)))
             else:
@@ -498,7 +498,7 @@ class Acos(Operator):
         
     def execute(self, stack, variables):
         if len(stack) >= 1:            
-            if stack[-1].type == "number":
+            if stack[-1].type in ["number", "integer"]:
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(math.acos(n1.value)))
             else:
@@ -523,7 +523,7 @@ class Tan(Operator):
         
     def execute(self, stack, variables):
         if len(stack) >= 1:            
-            if stack[-1].type == "number":
+            if stack[-1].type in ["number", "integer"]:
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(math.tan(n1.value)))
             else:
@@ -548,7 +548,7 @@ class Atan(Operator):
         
     def execute(self, stack, variables):
         if len(stack) >= 1:            
-            if stack[-1].type == "number":
+            if stack[-1].type in ["number", "integer"]:
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(math.atan(n1.value)))
             else:
@@ -573,7 +573,7 @@ class Atan2(Operator):
         
     def execute(self, stack, variables):
         if len(stack) >= 2:            
-            if stack[-2].type == "number" and stack[-1].type == "number":
+            if stack[-2].type in ["number", "integer"] and stack[-1].type in ["number", "integer"]:
                 n2 = stack.pop()
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(math.atan2(n1.value, n2.value)))
@@ -599,7 +599,7 @@ class Ln(Operator):
         
     def execute(self, stack, variables):
         if len(stack) >= 1:            
-            if stack[-1].type == "number":
+            if stack[-1].type in ["number", "integer"]:
                 n1 = stack.pop()
                 stack.append(dfv.data.Number(math.log(n1.value)))
             elif stack[-1].type == "complex":
@@ -659,7 +659,7 @@ class Inv(Operator):
         
     def execute(self, stack, variables):
         if len(stack) >= 1:            
-            if stack[-1].type == "number":
+            if stack[-1].type in ["number", "integer"]:
                 if stack[-1].value == 0:
                     stack.append(dfv.data.Error("Cannot divide by 0"))
                 else:

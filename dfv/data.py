@@ -220,6 +220,7 @@ class List(Data):
             
     def execute(self, stack, variables, parent_function=None):
         stack.append(copy.deepcopy(self))
+        #stack.append(self)
 
         
 class Function(Data):
@@ -236,13 +237,19 @@ class Function(Data):
         #    for loc in variables["curr_function"].locals:
             
         
-        variables["curr_function"] = self
-        for cmd in self.values:
-            #print "cmd:", cmd
-            cmd.execute(stack, variables, parent_function=self)           
-            if variables["ret_function"]: break
-        variables["ret_function"] = False
-        variables["curr_function"] = parent_function
+        if self.name.startswith("."): 
+            for cmd in self.values:
+                #print "cmd:", cmd
+                cmd.execute(stack, variables, parent_function=self)           
+                if variables["ret_function"]: break
+        else:
+            variables["curr_function"] = self
+            for cmd in self.values:
+                #print "cmd:", cmd
+                cmd.execute(stack, variables, parent_function=self)           
+                if variables["ret_function"]: break
+            variables["ret_function"] = False
+            variables["curr_function"] = parent_function
         
     def __str__(self):
         return "%s: [ %s ]" % (self.name, ", ".join([str(x) for x in self.values]))

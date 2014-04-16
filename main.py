@@ -126,12 +126,19 @@ PyCalc v0.1
     def execute_cmds(self, cmds):
         for cmd in cmds:
             if self.vars["curr_list"] == None:
-                cmd.execute(self.stack, self.vars)                
+                try:
+                    cmd.execute(self.stack, self.vars)
+                except ValueError:
+                    self.stack.append(dfv.data.Error("Math domain error"))               
             else:
                 if cmd.value != "]" and cmd.value != "[" or cmd.type == "string": 
                     self.vars["curr_list"].append(cmd)
                 else: 
-                    cmd.execute(self.stack, self.vars)                
+                    try:
+                        cmd.execute(self.stack, self.vars)
+                    except ValueError:
+                        self.stack.append(dfv.data.Error("Math domain error"))
+                                        
                 
     def parse_cmd(self, cmd_string):
         cmds = []
@@ -175,7 +182,6 @@ PyCalc v0.1
                     cmds.extend(self.parse_cmd(lines))
                     #cmds[0:0] = self.parse_cmd(lines)
                 except:
-                    pass
                     cmds.append(dfv.data.Error("Could not load module at location %s" % path))
             else:
                 cmds.append(dfv.data.Cmd(cmd))
@@ -196,7 +202,13 @@ PyCalc v0.1
         self.execute_cmds(self.parse_cmd(lines))
         
     def complete(self, text, state):
-        v = [key for key in self.vars]
+        v = [key for key in self.vars if ":" not in key]
+        last_type = None
+        if len(self.stack) >= 1: 
+            last_type = self.stack[-1].type
+            if last_type.startswith("object."): last_type = last_type[7:]
+            v_obj = [key.split(":")[1] for key in self.vars if key.startswith(last_type + ":")]
+            v = v + v_obj
         results = [x + " " for x in v if x.startswith(text)]
         return results[state]
 
