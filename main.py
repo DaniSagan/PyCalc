@@ -5,10 +5,8 @@ import math
 import dfv.data
 import dfv.operator
 import re
-import matplotlib.pyplot as plt
 import logging
 import os
-import sys
 import readline
 readline.parse_and_bind("tab: complete")
 

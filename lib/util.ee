@@ -58,7 +58,7 @@
 
 
 #   Function factor  
-*   Returns a list of the prime factors of the number .n #
+*   Returns a list of the prime factors of the number .n 
 [   "n" def
     2 "k" def
     [] "res" def
@@ -66,6 +66,25 @@
         [   n k // "n" def 
             res k pack cat "res" def
         ][  k ++ "k" def
+        ] ifelse
+    ][n 1 !=] while
+    res
+] "integer:factor" fun #
+
+
+#   Function factor  
+*   Returns a list of the prime factors of the number .n #
+[   "n" def
+    2 "k" def
+    [] "res" def
+    [   res 2 pack cat "res" def 
+        n 2 // "n" def
+    ][n 2 % 0 =] while
+    3 "k" def
+    [   n k % 0 =
+        [   n k // "n" def 
+            res k pack cat "res" def
+        ][  k 2 + "k" def
         ] ifelse
     ][n 1 !=] while
     res
