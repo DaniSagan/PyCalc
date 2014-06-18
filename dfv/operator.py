@@ -1378,11 +1378,19 @@ class Mod(Operator):
             if stack[-1].type == "number" and stack[-2].type == "number":
                 n2 = stack.pop()
                 n1 = stack.pop()
-                stack.append(dfv.data.Number(int(n1.value) % int(n2.value)))
-            if stack[-1].type == "integer" and stack[-2].type == "integer":
+                stack.append(dfv.data.Number((n1.value) % (n2.value)))
+            elif stack[-1].type == "integer" and stack[-2].type == "integer":
                 n2 = stack.pop()
                 n1 = stack.pop()
                 stack.append(dfv.data.Integer((n1.value) % (n2.value)))
+            elif stack[-2].type == "integer" and stack[-1].type == "number":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                stack.append(dfv.data.Number(float(n1.value) % (n2.value)))
+            elif stack[-2].type == "number" and stack[-1].type == "integer":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                stack.append(dfv.data.Number((n1.value) % float(n2.value)))
             else:
                 error_msg = ""
                 if variables["curr_function"] != None:

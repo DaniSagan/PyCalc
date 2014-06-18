@@ -170,4 +170,15 @@
     size1 size2 * npack
 ] "list:cartesian_prod" fun
 
+
+#   Function linspace
+*   Returns a list of equaly spaced numbers #
+[   ["start" "end" "count"] def
+    end start - count 1 - /
+    "kc" def
+    count range
+    kc pack [*] + map
+    start pack [+] + map
+] "linspace" fun
+
 #   End of file   #
