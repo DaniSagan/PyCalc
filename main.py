@@ -16,12 +16,12 @@ def is_number(string):
         float(string)
         return True
     except:
-        return False 
+        return False
 
 COMMAND = """
 {startup.ee}
 """
-            
+
 class App:
     TEXT = """
 PyCalc v0.1
@@ -60,7 +60,7 @@ PyCalc v0.1
                      "pow": dfv.operator.Pow(),
                      "def": dfv.operator.Def(),
                      "cls": dfv.operator.Cls(),
-                     "eval": dfv.operator.Eval(),
+                     "list:!": dfv.operator.Eval(),
                      "pyeval": dfv.operator.PyEval(),
                      "pyexec": dfv.operator.PyExec(),
                      "fun": dfv.operator.Fun(),
@@ -71,7 +71,7 @@ PyCalc v0.1
                      "false": dfv.data.Bool(False),
                      "if": dfv.operator.If(),
                      "ifelse": dfv.operator.IfElse(),
-                     "not": dfv.operator.Not(), 
+                     "not": dfv.operator.Not(),
                      "while": dfv.operator.While(),
                      "=": dfv.operator.Eq(),
                      "quit": dfv.operator.Quit(),
@@ -103,16 +103,16 @@ PyCalc v0.1
                      "real": dfv.operator.ToReal(),
                      "set": dfv.operator.Set(),
                      "tostring": dfv.operator.ToString()}
-                     
+
         self.string_mode = False
         self.stack = dfv.data.List(parent=None)
         self.curr_list = self.stack
-        
+
     def run(self):
         print(self.TEXT)
         self.execute_cmds(self.parse_cmd(COMMAND))
         readline.set_completer(self.complete)
-        
+
         while self.vars["running"]:
             #self.print_stack()
             self.print_list()
@@ -120,46 +120,46 @@ PyCalc v0.1
             self.execute_cmds(self.parse_cmd(self.cmd))
             print ""
         return 0
-                
+
     def execute_cmds(self, cmds):
         for cmd in cmds:
             if self.vars["curr_list"] == None:
                 try:
                     cmd.execute(self.stack, self.vars)
                 except ValueError:
-                    self.stack.append(dfv.data.Error("Math domain error"))               
+                    self.stack.append(dfv.data.Error("Math domain error"))
             else:
-                if cmd.value != "]" and cmd.value != "[" or cmd.type == "string": 
+                if cmd.value != "]" and cmd.value != "[" or cmd.type == "string":
                     self.vars["curr_list"].append(cmd)
-                else: 
+                else:
                     try:
                         cmd.execute(self.stack, self.vars)
                     except ValueError:
                         self.stack.append(dfv.data.Error("Math domain error"))
-                                        
-                
+
+
     def parse_cmd(self, cmd_string):
         cmds = []
-        
+
         # check for comments and delete them
         cmd_string = re.sub('#([^#]*)#', "", cmd_string)
-        
+
         # check for strings
         strs = re.findall('"([^"]*)"', cmd_string)
         cmd_string = re.sub('"([^"]*)"', " $str ", cmd_string)
-        
-        
-        
+
+
+
         # check for imports
         imports = re.findall('{([^}]+)}', cmd_string)
         cmd_string = re.sub('{([^}]+)}', " $imp ", cmd_string)
-        
+
         # lists
         cmd_string = cmd_string.replace("[", " [ ")
         cmd_string = cmd_string.replace("]", " ] ")
-        
+
         #print cmd_string
-        
+
         for cmd in str.split(cmd_string):
             if is_number(cmd):
                 if "." in cmd:
@@ -174,7 +174,7 @@ PyCalc v0.1
                 cmds.append(dfv.data.String(strs.pop(0)))
             elif cmd == "$imp":
                 path = os.path.dirname(os.path.abspath(__file__)) + "/" + imports.pop(0)
-                try:                    
+                try:
                     with open(path, "r") as f:
                         lines = f.read()
                     cmds.extend(self.parse_cmd(lines))
@@ -184,25 +184,25 @@ PyCalc v0.1
             else:
                 cmds.append(dfv.data.Cmd(cmd))
         return cmds
-        
+
     def print_list(self):
         self.stack.print_()
-        
+
     def print_stack(self):
         print "----------------"
         for x in self.stack:
             print "%s : %s" % (x, x.type)
         print "----------------"
-        
+
     def import_file(self, filename):
         with open(filename, "r") as f:
             lines = f.read()
         self.execute_cmds(self.parse_cmd(lines))
-        
+
     def complete(self, text, state):
         v = [key for key in self.vars if ":" not in key]
         last_type = None
-        if len(self.stack) >= 1: 
+        if len(self.stack) >= 1:
             last_type = self.stack[-1].type
             if last_type.startswith("object."): last_type = last_type[7:]
             v_obj = [key.split(":")[1] for key in self.vars if key.startswith(last_type + ":")]
@@ -210,15 +210,15 @@ PyCalc v0.1
         results = [x + " " for x in v if x.startswith(text)]
         return results[state]
 
-def main():    
+def main():
     path = os.path.dirname(os.path.abspath(__file__))
     if not os.path.exists(path + '/log'):
         os.makedirs(path + '/log')
     if not os.path.exists(path + '/script'):
         os.makedirs(path + '/script')
     logging.basicConfig(filename=path + '/log/log.log', level=logging.DEBUG)
-    
+
     app = App()
     app.run()
-    
+
 if __name__ == "__main__": main()

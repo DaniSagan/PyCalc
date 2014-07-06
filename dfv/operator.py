@@ -843,9 +843,12 @@ class Eval(Operator):
         
     def execute(self, stack, variables):
         if len(stack) >= 1:            
-            if stack[-1].type != "none":
+            if stack[-1].type == "list":
                 n1 = stack.pop()
-                n1.execute(stack, variables, variables["curr_function"])
+                StartList().execute(stack, variables)
+                for cmd in n1:
+                    cmd.execute(variables["curr_list"], variables, variables["curr_function"])
+                EndList().execute(stack, variables)
             else:
                 error_msg = ""
                 if variables["curr_function"] != None:

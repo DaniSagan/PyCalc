@@ -177,8 +177,8 @@
     end start - count 1 - /
     "kc" def
     count range
-    kc pack [*] + map
-    start pack [+] + map
+    [kc] ! [*] + map
+    [start] ! [+] + map
 ] "linspace" fun
 
 #   End of file   #
