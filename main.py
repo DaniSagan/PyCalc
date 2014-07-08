@@ -73,6 +73,7 @@ PyCalc v0.1
                      "ifelse": dfv.operator.IfElse(),
                      "not": dfv.operator.Not(),
                      "while": dfv.operator.While(),
+                     "for": dfv.operator.For(),
                      "=": dfv.operator.Eq(),
                      "quit": dfv.operator.Quit(),
                      "!=": dfv.operator.Neq(),

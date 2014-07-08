@@ -1083,6 +1083,51 @@ class While(Operator):
                 error_msg += "Function %s, " % variables["curr_function"].name
             error_msg += "Command %s: Not enough parameters" % self.word
             stack.append(dfv.data.Error(error_msg))
+
+
+class For(Operator):
+    def __init__(self):
+        Operator.__init__(self)
+        self.type = "for"
+        self.word = "for"
+        
+    def execute(self, stack, variables):
+        if len(stack) >= 2:
+            if stack[-1].type == "list" and stack[-2].type == "list":
+                n2 = stack.pop()
+                n1 = stack.pop()
+                
+                for value in n1.values:
+                    stack.append(value)
+                    for cmd in n2.values:
+                        cmd.execute(stack, variables, variables["curr_function"])
+                    
+                    #cmd.execute(stack, variables, variables["curr_function"])
+                """loop = True
+                while loop:
+                    for cmd in n2.values:
+                        cmd.execute(stack, variables, variables["curr_function"])
+                    res = stack.pop()
+                    if res.type == "bool" and res.value == True:
+                        for cmd in n1.values:
+                            cmd.execute(stack, variables, variables["curr_function"])
+                            if variables["ret_function"]: 
+                                loop = False
+                                break
+                    else:
+                        loop = False"""
+            else:
+                error_msg = ""
+                if variables["curr_function"] != None:
+                    error_msg += "Function %s, " % variables["curr_function"].name
+                error_msg += "Command %s: Types not supported" % self.word
+                stack.append(dfv.data.Error(error_msg))
+        else:
+            error_msg = ""
+            if variables["curr_function"] != None:
+                error_msg += "Function %s, " % variables["curr_function"].name
+            error_msg += "Command %s: Not enough parameters" % self.word
+            stack.append(dfv.data.Error(error_msg))
             
             
 class Eq(Operator):

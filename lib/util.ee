@@ -4,12 +4,12 @@
 #
 
 #   Function for  
-*   Executes the function .fn for each element of .list #
+*   Executes the function .fn for each element of .list 
 [   ["list" "fn"] def
     list abs "size" def
     0 "k" def
     [list k get] fn cat [k ++ "k" def] cat [k size <] while
-] "for" fun
+] "for" fun#
 
 
 #   Function map  
