@@ -181,4 +181,13 @@
     [start] ! [+] + map
 ] "linspace" fun
 
+#   Function nlog
+*   x n nlog
+*   Returns the logarithm of base <base> of the number <x> #
+[   ["x" "base"] def
+    x ln
+    base ln
+    /
+] "nlog" fun
+
 #   End of file   #
