@@ -25,6 +25,7 @@ COMMAND = """
 class App:
     TEXT = """
 PyCalc v0.1
+Daniel Fernández Villanueva, ©2014
            """
     def __init__(self):
         self.cmd = ""
@@ -103,7 +104,8 @@ PyCalc v0.1
                      "unpack": dfv.operator.Unpack(),
                      "real": dfv.operator.ToReal(),
                      "set": dfv.operator.Set(),
-                     "tostring": dfv.operator.ToString()}
+                     "tostring": dfv.operator.ToString(),
+                     "extract": dfv.operator.Extract()}
 
         self.string_mode = False
         self.stack = dfv.data.List(parent=None)
@@ -124,6 +126,9 @@ PyCalc v0.1
 
     def execute_cmds(self, cmds):
         for cmd in cmds:
+            """if (len(self.stack) >= 1 and self.stack[-1].type == "error" and
+               cmd.value != "cls" and cmd.value != "quit"):
+                break"""
             if self.vars["curr_list"] == None:
                 try:
                     cmd.execute(self.stack, self.vars)
@@ -192,7 +197,7 @@ PyCalc v0.1
     def print_stack(self):
         print "----------------"
         for x in self.stack:
-            print "%s : %s" % (x, x.type)
+            print "%s :\t\t%s" % (x, x.type)
         print "----------------"
 
     def import_file(self, filename):

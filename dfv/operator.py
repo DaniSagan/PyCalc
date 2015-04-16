@@ -1950,4 +1950,13 @@ class ToString(Operator):
             error_msg += "Command %s: Not enough parameters" % self.word
             stack.append(dfv.data.Error(error_msg))
             
+class Extract(Operator):
+    def __init__(self):
+        Operator.__init__(self)
+        self.type = "extract"
+        self.word = "extract"
+        
+    def execute(self, stack, variables):
+        stack.append(dfv.data.Extractor(stack, variables))
+            
                 

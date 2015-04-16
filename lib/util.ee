@@ -190,4 +190,11 @@
     /
 ] "nlog" fun
 
+[   ["d" "m" "s"] def  
+    d 0 > 
+    [d m 60 / + s 3600 / +]
+    [d m -60 / + s -3600 / +]
+    ifelse
+] "to_deg" fun
+
 #   End of file   #
